@@ -28,8 +28,8 @@ func (at *accessToken) GenerateAccessToken(customer *model.Customer) (string, er
 			IssuedAt:  now.Unix(),
 			ExpiresAt: end.Unix(),
 		},
-		Id:           customer.Id,
-		Customername: customer.Customername,
+		Id:       customer.Id,
+		Username: customer.Username,
 	}
 
 	token := jwt.NewWithClaims(

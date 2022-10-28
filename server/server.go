@@ -36,8 +36,7 @@ func (a *appServer) initHandlers() {
 	controller.NewController(a.ucMan, a.engine)
 
 	controller.NewCustomerController(a.ucMan.CustomerUsecase(), a.engine)
-	controller.NewMenuController(a.ucMan.MenuUsecase(), a.engine)
-	controller.NewTransactionController(a.ucMan.TransactionUsecase(), a.ucMan.MenuUsecase(), a.engine)
+	controller.NewTransactionController(a.ucMan.TransactionUsecase(), a.ucMan.CustomerUsecase(), a.engine)
 	controller.NewLoginController(a.ucMan.CustomerUsecase(), a.engine)
 }
 
