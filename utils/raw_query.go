@@ -1,0 +1,56 @@
+package utils
+
+const (
+	MENU_GET_ALL           = "SELECT id, name, price, stock, image FROM menu"
+	MENU_GET_ALL_PAGINATED = MENU_GET_ALL + " limit $1 offset $2"
+	MENU_GET_BY_ID         = MENU_GET_ALL + " WHERE id = $1"
+	MENU_GET_BY_NAME       = MENU_GET_ALL + " WHERE name like $1"
+
+	MENU_INSERT       = "INSERT INTO menu(id, name, price, stock, image) VALUES (:id, :name, :price, :stock, :image)"
+	MENU_UPDATE       = "UPDATE menu SET name=:name, price=:price, stock=:stock where id=:id"
+	MENU_UPDATE_STOCK = "UPDATE menu SET stock=stock-:qty where id=:menu_id"
+	MENU_DELETE       = "DELETE from menu WHERE id=$1"
+
+	MENU_INSERT_TEST       = "INSERT INTO menu(id, name, price, stock, image) VALUES ($1, $2, $3, $4, $5)"
+	MENU_UPDATE_TEST       = "UPDATE menu SET name=$1, price=$2, stock=$3 where id=$4"
+	MENU_UPDATE_STOCK_TEST = "UPDATE menu SET stock=stock-$1 where id=$2"
+	// ===========================================================
+
+	USER_GET_ALL            = "SELECT id, name, customername, image  FROM customers"
+	USER_GET_ALL_PAGINATED  = USER_GET_ALL + " limit $1 offset $2"
+	USER_GET_BY_ID          = USER_GET_ALL + " WHERE id = $1"
+	USER_GET_BY_NAME        = USER_GET_ALL + " WHERE name like $1"
+	USER_GET_BY_CREDENTIALS = USER_GET_ALL + " WHERE customername=$1 AND password=$2"
+
+	USER_INSERT = "INSERT INTO customers(id, name, customername, password, image) VALUES (:id, :name, :customername, :password, :image)"
+	USER_UPDATE = "UPDATE customers SET name=:name, customername=:customername, password=:password where id=:id"
+	USER_DELETE = "DELETE from customers WHERE id=$1"
+
+	USER_INSERT_TEST = "INSERT INTO customers(id, name, customername, password, image) VALUES ($1, $2, $3, $4, $5)"
+	USER_UPDATE_TEST = "UPDATE customers SET name=$1, customername=$2, password=$3 where id=$4"
+	// ===========================================================
+
+	TRANSACTION_GET_ALL           = "SELECT id, total_price, created_at, updated_at FROM transaction "
+	TRANSACTION_GET_ALL_PAGINATED = TRANSACTION_GET_ALL + " limit $1 offset $2"
+	TRANSACTION_GET_BY_ID         = TRANSACTION_GET_ALL + " WHERE id = $1"
+	TRANSACTION_GET_LAST_ID       = "SELECT id from transaction order by id desc limit 1"
+
+	TRANSACTION_INSERT = "INSERT INTO transaction(id, total_price) VALUES (:id, :total_price)"
+	// TRANSACTION_UPDATE = "UPDATE transaction set total_price=:total_price where id=:id"
+	// TRANSACTION_DELETE = "DELETE from transaction WHERE id=$1"
+
+	TRANSACTION_INSERT_TEST = "INSERT INTO transaction(id, total_price) VALUES ($1, $2)"
+	// ==============================================================
+
+	TRANSACTION_DETAIL_INSERT                = "INSERT INTO transaction_detail(transaction_id, menu_id, qty, subtotal) VALUES (:transaction_id, :menu_id, :qty, :subtotal)"
+	TRANSACTION_DETAIL_GET_ALL               = "SELECT transaction_id, menu_id, qty, subtotal from transaction_detail "
+	TRANSACTION_DETAIL_GET_BY_ID_TRANSACTION = TRANSACTION_DETAIL_GET_ALL + " where transaction_id = $1"
+
+	TRANSACTION_DETAIL_INSERT_TEST = "INSERT INTO transaction_detail(transaction_id, menu_id, qty, subtotal) VALUES ($1, $2, $3, $4)"
+	// ==============================================================
+
+// 	GET_DAILY_REPORT   = "SELECT date, COUNT(id) as transaction, SUM(total_price) as income from transaction group by date"
+// 	GET_MONTHLY_REPORT = "SELECT date, COUNT(id) as transaction, SUM(total_price) as income from transaction where date between $1 and $2"
+
+// GET_OVERALL_REPORT = "SELECT date, COUNT(id) as transaction, SUM(total_price) as income from transaction"
+)
