@@ -2,7 +2,9 @@ package migration
 
 import (
 	"fmt"
+	"mnc-bank-api/model"
 	"mnc-bank-api/utils"
+	"mnc-bank-api/utils/jsonrw"
 	"os"
 )
 
@@ -24,6 +26,10 @@ func Migrate() {
 				panic(err)
 			}
 
+			if table == "customer" {
+				addDummyCustomer()
+			}
+
 			file.Close()
 		}
 	}
@@ -36,4 +42,26 @@ func filePath(tableName string) string {
 func fileExists(fileName string) bool {
 	_, err := os.Stat(fileName)
 	return err == nil
+}
+
+func addDummyCustomer() {
+
+	customer1 := model.Customer{
+		Id:       utils.GenerateId(),
+		Name:     "Andi",
+		Username: "andi",
+		Password: "password",
+		Balance:  500000,
+	}
+
+	customer2 := model.Customer{
+		Id:       utils.GenerateId(),
+		Name:     "Budi",
+		Username: "budi",
+		Password: "password",
+		Balance:  500000,
+	}
+
+	jsonrw.JsonWriteData("customer", customer1)
+	jsonrw.JsonWriteData("customer", customer2)
 }

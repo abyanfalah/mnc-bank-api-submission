@@ -1,16 +1,16 @@
 [
 	{
-		"id": "25cba835-4666-4773-a773-13edbfca12b7",
-		"name": "andy",
-		"username": "andy123",
-		"password": "74df3368cfbb67253eac6f78ce728bbf3827e840",
-		"balance": 500
+		"balance": 500000,
+		"id": "ba614b3e-dd18-4224-b2ca-7c4d72aa15cd",
+		"name": "Andi",
+		"password": "password",
+		"username": "andi"
 	},
 	{
-		"id": "dc8fd17d-935f-4002-b683-7a55ab119f34",
-		"name": "budi",
+		"id": "cf33f6ce-5a19-46e0-a0b7-1c5451406355",
+		"name": "Budi",
 		"username": "budi",
-		"password": "83161a62f22277c65a6cdb7ebc314f218c376c63",
-		"balance": 500
+		"password": "password",
+		"balance": 500000
 	}
 ]

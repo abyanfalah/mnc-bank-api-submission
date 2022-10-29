@@ -92,10 +92,7 @@ func NewCustomerController(usecase usecase.CustomerUsecase, router *gin.Engine) 
 	router.GET("/customer/:id", controller.GetById)
 	router.POST("/customer", controller.CreateNewCustomer)
 
-	// protectedRoute := router.Group("/customer", authMiddleware.RequireToken())
-	// protectedRoute.POST("/", controller.CreateNewCustomer)
-	// protectedRoute.PUT("/:id", controller.UpdateCustomer)
-	// protectedRoute.DELETE("/:id", controller.DeleteCustomer)
+	// router.POST("/top_up", middleware.IsLogin())
 
 	return &controller
 }
