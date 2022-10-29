@@ -12,7 +12,7 @@ type customerUsecase struct {
 type CustomerUsecase interface {
 	GetAll() ([]model.Customer, error)
 	GetById(id string) (model.Customer, error)
-	// GetByName(name string) (interface{}, error)
+	GetByUsername(username string) model.Customer
 	GetByCredentials(username, password string) (model.Customer, error)
 
 	Insert(customer *model.Customer) (model.Customer, error)
@@ -30,9 +30,16 @@ func (usecase *customerUsecase) GetById(id string) (model.Customer, error) {
 	return usecase.customerRepository.GetById(id)
 }
 
-// func (usecase *customerUsecase) GetByName(name string) (interface{}, error) {
-// 	return usecase.customerRepository.GetByName(name)
-// }
+func (usecase *customerUsecase) GetByUsername(username string) model.Customer {
+	list, _ := usecase.GetAll()
+	for _, each := range list {
+		if each.Username == username {
+			return each
+		}
+	}
+
+	return model.Customer{}
+}
 
 func (usecase *customerUsecase) GetByCredentials(username, password string) (model.Customer, error) {
 	return usecase.customerRepository.GetByCredentials(username, password)

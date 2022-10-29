@@ -2,14 +2,11 @@ package controller
 
 import (
 	"log"
-	"mnc-bank-api/config"
 	"mnc-bank-api/model"
 	"mnc-bank-api/usecase"
 	"mnc-bank-api/utils"
-	"mnc-bank-api/utils/authenticator"
 	response "mnc-bank-api/utils/common_response"
 	"mnc-bank-api/utils/jsonrw"
-	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -82,32 +79,6 @@ func (lc *LoginController) Logout(ctx *gin.Context) {
 	response.JsonSuccessMessage(ctx, "logout success")
 }
 
-func (lc *LoginController) LoginTest(ctx *gin.Context) {
-	var credential model.Credential
-	accessToken := authenticator.NewAccessToken(config.NewConfig().TokenConfig)
-
-	err := ctx.ShouldBindJSON(&credential)
-
-	if err != nil {
-		response.JsonErrorBadRequestMessage(ctx, err, "cant bind struct")
-		return
-	}
-
-	customer, err := lc.usecase.GetByCredentials(credential.Username, credential.Password)
-	if err != nil {
-		response.JsonErrorBadRequestMessage(ctx, err, "invalid credentials")
-		return
-	}
-
-	_, err = accessToken.GenerateAccessToken(&customer)
-	if err != nil {
-		response.JsonErrorInternalServerError(ctx, err, "cannot generate token")
-		return
-	}
-
-	ctx.JSON(http.StatusOK, customer)
-}
-
 func NewLoginController(usecase usecase.CustomerUsecase, router *gin.Engine) *LoginController {
 	controller := LoginController{
 		usecase: usecase,
@@ -116,7 +87,7 @@ func NewLoginController(usecase usecase.CustomerUsecase, router *gin.Engine) *Lo
 
 	router.POST("/login", controller.Login)
 	router.POST("/logout", controller.Logout)
-	router.POST("/test/login", controller.LoginTest)
+	// router.POST("/test/login", controller.LoginTest)
 
 	return &controller
 }

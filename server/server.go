@@ -4,7 +4,6 @@ import (
 	"mnc-bank-api/config"
 	"mnc-bank-api/controller"
 	"mnc-bank-api/manager"
-	"mnc-bank-api/utils/authenticator"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -13,10 +12,9 @@ import (
 )
 
 type appServer struct {
-	ucMan        manager.UsecaseManager
-	engine       *gin.Engine
-	config       config.Config
-	tokenService authenticator.AccessToken
+	ucMan  manager.UsecaseManager
+	engine *gin.Engine
+	config config.Config
 }
 
 func NewAppServer() *appServer {
@@ -25,10 +23,9 @@ func NewAppServer() *appServer {
 	repoMan := manager.NewRepoManager()
 
 	return &appServer{
-		ucMan:        manager.NewUsecaseManager(repoMan),
-		engine:       gin.Default(),
-		config:       config,
-		tokenService: authenticator.NewAccessToken(config.TokenConfig),
+		ucMan:  manager.NewUsecaseManager(repoMan),
+		engine: gin.Default(),
+		config: config,
 	}
 }
 
