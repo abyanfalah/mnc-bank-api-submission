@@ -2,7 +2,8 @@ package controller
 
 import (
 	"mnc-bank-api/manager"
-	"mnc-bank-api/middleware"
+	response "mnc-bank-api/utils/common_response"
+	"mnc-bank-api/utils/jsonrw"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -23,12 +24,13 @@ func NewController(usecaseManager manager.UsecaseManager, router *gin.Engine) *C
 		ctx.String(http.StatusOK, "hello world")
 	})
 
-	router.GET("/session", middleware.IsLogin(), func(ctx *gin.Context) {
-		ctx.String(http.StatusOK, "hello logged in person")
-	})
-
 	router.POST("/", func(ctx *gin.Context) {
 		ctx.String(http.StatusPermanentRedirect, "you are already logged in")
+	})
+
+	router.GET("/activity_log", func(ctx *gin.Context) {
+		list, _ := jsonrw.JsonReadData("activity_log")
+		response.JsonDataResponse(ctx, list)
 	})
 
 	return &controller

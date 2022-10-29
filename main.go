@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"mnc-bank-api/config"
-	"mnc-bank-api/server"
+	"mnc-bank-api/utils/migration"
 	"os"
 	"strings"
 )
@@ -16,10 +16,11 @@ const (
 )
 
 func main() {
+	migration.Migrate()
 	setEnv()
 	viewConfigs()
 
-	server.NewAppServer().Run()
+	// server.NewAppServer().Run()
 
 }
 
@@ -40,5 +41,4 @@ func viewConfigs() {
 	fmt.Println("port:", config.ApiConfig.Port)
 
 	fmt.Println(strings.Repeat("=", 50))
-	fmt.Println()
 }
