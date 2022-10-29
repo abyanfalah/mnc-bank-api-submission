@@ -35,7 +35,7 @@ func (repo *customerRepository) UpdateList(newList []model.Customer) error {
 		return err
 	}
 
-	return nil
+	return errors.New("hey")
 }
 
 func NewCustomerRepository(tableName string) CustomerRepository {

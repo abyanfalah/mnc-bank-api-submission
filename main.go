@@ -22,7 +22,6 @@ func main() {
 	viewConfigs()
 
 	server.NewAppServer().Run()
-
 }
 
 func setEnv() {
