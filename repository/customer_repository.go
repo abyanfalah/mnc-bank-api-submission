@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"mnc-bank-api/model"
 	"mnc-bank-api/utils/jsonrw"
+	"os"
 )
 
 type customerRepository struct {
@@ -30,12 +31,23 @@ func (repo *customerRepository) GetAll() ([]model.Customer, error) {
 }
 
 func (repo *customerRepository) UpdateList(newList []model.Customer) error {
-	err := jsonrw.JsonUpdateList(repo.tableName, newList)
+	if newList == nil {
+		return errors.New("aborted, no new list received")
+	}
+
+	tablePath := "database/" + repo.tableName + ".json"
+
+	err := os.Truncate(tablePath, 0)
 	if err != nil {
 		return err
 	}
 
-	return errors.New("hey")
+	err = ioutil.WriteFile(tablePath, []byte(jsonrw.JsonEncode(newList)), os.ModePerm)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func NewCustomerRepository(tableName string) CustomerRepository {

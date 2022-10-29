@@ -6,6 +6,7 @@ import (
 	"mnc-bank-api/utils"
 	"mnc-bank-api/utils/jsonrw"
 	"os"
+	"time"
 )
 
 func Migrate() {
@@ -27,7 +28,7 @@ func Migrate() {
 			}
 
 			if table == "customer" {
-				addDummyCustomer()
+				AddDummyCustomer()
 			}
 
 			file.Close()
@@ -44,7 +45,7 @@ func fileExists(fileName string) bool {
 	return err == nil
 }
 
-func addDummyCustomer() {
+func AddDummyCustomer() {
 
 	customer1 := model.Customer{
 		Id:       utils.GenerateId(),
@@ -64,4 +65,26 @@ func addDummyCustomer() {
 
 	jsonrw.JsonWriteData("customer", customer1)
 	jsonrw.JsonWriteData("customer", customer2)
+}
+
+func AddDummyTransaction() {
+
+	tx1 := model.Transaction{
+		Id:         "test",
+		SenderId:   "test",
+		ReceiverId: "test",
+		Amount:     12345,
+		Created_at: time.Now(),
+	}
+
+	tx2 := model.Transaction{
+		Id:         "test",
+		SenderId:   "test",
+		ReceiverId: "test",
+		Amount:     85858,
+		Created_at: time.Now(),
+	}
+
+	jsonrw.JsonWriteData("transaction", tx1)
+	jsonrw.JsonWriteData("transaction", tx2)
 }
