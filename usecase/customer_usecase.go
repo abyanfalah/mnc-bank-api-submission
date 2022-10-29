@@ -1,8 +1,10 @@
 package usecase
 
 import (
+	"errors"
 	"mnc-bank-api/model"
 	"mnc-bank-api/repository"
+	"mnc-bank-api/utils"
 )
 
 type customerUsecase struct {
@@ -17,9 +19,6 @@ type CustomerUsecase interface {
 
 	Insert(customer *model.Customer) (model.Customer, error)
 	UpdateBothBalance(payAmount int, senderId, receiverId string) error
-
-	// Update(customer *model.Customer) (model.Customer, error)
-	// Delete(id string) error
 }
 
 func (usecase *customerUsecase) GetAll() ([]model.Customer, error) {
@@ -27,7 +26,19 @@ func (usecase *customerUsecase) GetAll() ([]model.Customer, error) {
 }
 
 func (usecase *customerUsecase) GetById(id string) (model.Customer, error) {
-	return usecase.customerRepository.GetById(id)
+	tableName := "customer"
+	list, err := usecase.customerRepository.GetAll()
+	if err != nil {
+		return model.Customer{}, errors.New("unable to read json file from table " + tableName + " : " + err.Error())
+	}
+
+	for index, each := range list {
+		if each.Id == id {
+			return list[index], nil
+		}
+	}
+
+	return model.Customer{}, errors.New("unable to find customer " + id)
 }
 
 func (usecase *customerUsecase) GetByUsername(username string) model.Customer {
@@ -42,11 +53,33 @@ func (usecase *customerUsecase) GetByUsername(username string) model.Customer {
 }
 
 func (usecase *customerUsecase) GetByCredentials(username, password string) (model.Customer, error) {
-	return usecase.customerRepository.GetByCredentials(username, password)
+	list, err := usecase.GetAll()
+	if err != nil {
+		return model.Customer{}, err
+	}
+
+	for index, each := range list {
+		if each.Username == username && each.Password == utils.Sha1(password) {
+			return list[index], nil
+		}
+	}
+
+	return model.Customer{}, errors.New("invalid credential")
 }
 
 func (usecase *customerUsecase) Insert(newCustomer *model.Customer) (model.Customer, error) {
-	return usecase.customerRepository.Insert(newCustomer)
+	newCustomer.Id = utils.GenerateId()
+	newCustomer.Password = utils.Sha1(newCustomer.Password)
+
+	list, _ := usecase.GetAll()
+	list = append(list, *newCustomer)
+
+	err := usecase.customerRepository.UpdateList(list)
+	if err != nil {
+		return model.Customer{}, nil
+	}
+
+	return *newCustomer, nil
 }
 
 func (usecase *customerUsecase) UpdateBothBalance(payAmount int, senderId, receiverId string) error {
@@ -64,14 +97,6 @@ func (usecase *customerUsecase) UpdateBothBalance(payAmount int, senderId, recei
 
 	return usecase.customerRepository.UpdateList(list)
 }
-
-// func (usecase *customerUsecase) Update(newCustomer *model.Customer) (model.Customer, error) {
-// 	return usecase.customerRepository.Update(newCustomer)
-// }
-
-// func (usecase *customerUsecase) Delete(id string) error {
-// 	return usecase.customerRepository.Delete(id)
-// }
 
 func NewCustomerUsecase(customerRepository repository.CustomerRepository) CustomerUsecase {
 	usecase := new(customerUsecase)

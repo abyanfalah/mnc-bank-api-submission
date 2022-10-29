@@ -7,6 +7,7 @@ import (
 	"mnc-bank-api/utils"
 	response "mnc-bank-api/utils/common_response"
 	"mnc-bank-api/utils/jsonrw"
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -20,12 +21,11 @@ type LoginController struct {
 func (lc *LoginController) Login(ctx *gin.Context) {
 	customerId, _ := ctx.Cookie("session")
 	if customerId != "" {
-		ctx.Redirect(300, "/")
+		ctx.Redirect(http.StatusPermanentRedirect, "/")
 		return
 	}
 
 	var credential model.Credential
-
 	err := ctx.ShouldBindJSON(&credential)
 	if err != nil {
 		response.JsonErrorBadRequestMessage(ctx, err, "cant bind struct")

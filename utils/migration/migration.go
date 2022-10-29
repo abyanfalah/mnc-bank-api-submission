@@ -50,7 +50,7 @@ func addDummyCustomer() {
 		Id:       utils.GenerateId(),
 		Name:     "Andi",
 		Username: "andi",
-		Password: "password",
+		Password: "5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8",
 		Balance:  500000,
 	}
 
@@ -58,7 +58,7 @@ func addDummyCustomer() {
 		Id:       utils.GenerateId(),
 		Name:     "Budi",
 		Username: "budi",
-		Password: "password",
+		Password: "5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8",
 		Balance:  500000,
 	}
 

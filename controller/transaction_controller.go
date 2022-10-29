@@ -10,13 +10,13 @@ import (
 )
 
 type TransactionController struct {
-	usecase         usecase.TransactionUsecase
-	customerUsecase usecase.CustomerUsecase
-	router          *gin.Engine
+	transactionUsecase usecase.TransactionUsecase
+	customerUsecase    usecase.CustomerUsecase
+	router             *gin.Engine
 }
 
-func (c *TransactionController) ListTransaction(ctx *gin.Context) {
-	list, err := c.usecase.GetAll()
+func (tc *TransactionController) ListTransaction(ctx *gin.Context) {
+	list, err := tc.transactionUsecase.GetAll()
 	if err != nil {
 		response.JsonErrorInternalServerError(ctx, err, "cannot get transaction list")
 		return
@@ -30,20 +30,19 @@ func (c *TransactionController) ListTransaction(ctx *gin.Context) {
 	response.JsonDataResponse(ctx, list)
 }
 
-// func (c *TransactionController) GetById(ctx *gin.Context) {
-// 	transaction, err := c.usecase.GetById(ctx.Param("id"))
-// 	if err != nil {
-// 		response.JsonErrorNotFound(ctx, err, "cannot get transaction")
-// 		return
-// 	}
+func (tc *TransactionController) GetById(ctx *gin.Context) {
+	transaction, err := tc.transactionUsecase.GetById(ctx.Param("id"))
+	if err != nil {
+		response.JsonErrorBadRequest(ctx, err)
+	}
 
-// 	response.JsonDataResponse(ctx, transaction)
-// }
+	response.JsonDataResponse(ctx, transaction)
+}
 
-func (c *TransactionController) CreateNewTransaction(ctx *gin.Context) {
+func (tc *TransactionController) CreateNewTransaction(ctx *gin.Context) {
 	var transaction model.Transaction
 	customerId, _ := ctx.Cookie("session")
-	customer, _ := c.customerUsecase.GetById(customerId)
+	customer, _ := tc.customerUsecase.GetById(customerId)
 
 	err := ctx.ShouldBindJSON(&transaction)
 	if err != nil {
@@ -56,7 +55,7 @@ func (c *TransactionController) CreateNewTransaction(ctx *gin.Context) {
 		return
 	}
 
-	_, err = c.customerUsecase.GetById(transaction.ReceiverId)
+	_, err = tc.customerUsecase.GetById(transaction.ReceiverId)
 	if err != nil {
 		response.JsonErrorBadRequest(ctx, err)
 		return
@@ -73,7 +72,7 @@ func (c *TransactionController) CreateNewTransaction(ctx *gin.Context) {
 	}
 
 	// update both customers balance
-	err = c.customerUsecase.UpdateBothBalance(transaction.Amount, customerId, transaction.ReceiverId)
+	err = tc.customerUsecase.UpdateBothBalance(transaction.Amount, customerId, transaction.ReceiverId)
 	if err != nil {
 		response.JsonErrorInternalServerError(ctx, err, "transaction failed, cannot update both balance")
 		return
@@ -81,7 +80,7 @@ func (c *TransactionController) CreateNewTransaction(ctx *gin.Context) {
 
 	// create transaction
 	transaction.SenderId = customer.Id
-	newTransaction, err := c.usecase.Insert(&transaction)
+	newTransaction, err := tc.transactionUsecase.Insert(&transaction)
 	if err != nil {
 		response.JsonErrorInternalServerError(ctx, err, "insert failed")
 		return
@@ -92,14 +91,14 @@ func (c *TransactionController) CreateNewTransaction(ctx *gin.Context) {
 
 func NewTransactionController(usecase usecase.TransactionUsecase, CustomerUsecase usecase.CustomerUsecase, router *gin.Engine) *TransactionController {
 	controller := TransactionController{
-		usecase:         usecase,
-		customerUsecase: CustomerUsecase,
-		router:          router,
+		transactionUsecase: usecase,
+		customerUsecase:    CustomerUsecase,
+		router:             router,
 	}
 
 	protectedRoute := router.Group("/transaction", middleware.IsLogin())
 	protectedRoute.GET("", controller.ListTransaction)
-	// protectedRoute.GET("/:id", controller.GetById)
+	protectedRoute.GET("/:id", controller.GetById)
 	protectedRoute.POST("", controller.CreateNewTransaction)
 
 	return &controller

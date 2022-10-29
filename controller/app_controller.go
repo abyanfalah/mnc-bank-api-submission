@@ -25,7 +25,9 @@ func NewController(usecaseManager manager.UsecaseManager, router *gin.Engine) *C
 	})
 
 	router.POST("/", func(ctx *gin.Context) {
-		ctx.String(http.StatusPermanentRedirect, "you are already logged in")
+		ctx.JSON(http.StatusPermanentRedirect, gin.H{
+			"message": "you are already logged in",
+		})
 	})
 
 	router.GET("/activity_log", func(ctx *gin.Context) {

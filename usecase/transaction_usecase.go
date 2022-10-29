@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"errors"
 	"mnc-bank-api/model"
 	"mnc-bank-api/repository"
 )
@@ -11,37 +12,33 @@ type transactionUsecase struct {
 
 type TransactionUsecase interface {
 	GetAll() ([]model.Transaction, error)
-	// GetAllPaginated(page int, rows int) ([]model.Transaction, error)
-	// GetById(id string) (model.Transaction, error)
-
+	GetById(id string) (model.Transaction, error)
 	Insert(transaction *model.Transaction) (model.Transaction, error)
-	// Update(transaction *model.Transaction) (model.Transaction, error)
-	// Delete(id string) error
 }
 
-func (tu *transactionUsecase) GetAll() ([]model.Transaction, error) {
-	return tu.transactionRepository.GetAll()
+func (usecase *transactionUsecase) GetAll() ([]model.Transaction, error) {
+	return usecase.transactionRepository.GetAll()
 }
 
-// func (tu *transactionUsecase) GetAllPaginated(page int, rows int) ([]model.Transaction, error) {
-// 	return tu.transactionRepository.GetAllPaginated(page, rows)
-// }
+func (usecase *transactionUsecase) GetById(id string) (model.Transaction, error) {
+	tableName := "transaction"
+	list, err := usecase.transactionRepository.GetAll()
+	if err != nil {
+		return model.Transaction{}, errors.New("unable to read json file from table " + tableName + " : " + err.Error())
+	}
 
-// func (tu *transactionUsecase) GetById(id string) (model.Transaction, error) {
-// 	return tu.transactionRepository.GetById(id)
-// }
+	for _, each := range list {
+		if each.Id == id {
+			return each, nil
+		}
+	}
 
-func (tu *transactionUsecase) Insert(newTransaction *model.Transaction) (model.Transaction, error) {
-	return tu.transactionRepository.Insert(newTransaction)
+	return model.Transaction{}, errors.New("unable to find transaction " + id)
 }
 
-// func (tu *transactionUsecase) Update(newTransaction *model.Transaction) (model.Transaction, error) {
-// 	return tu.transactionRepository.Update(newTransaction)
-// }
-
-// func (tu *transactionUsecase) Delete(id string) error {
-// 	return tu.transactionRepository.Delete(id)
-// }
+func (usecase *transactionUsecase) Insert(newTransaction *model.Transaction) (model.Transaction, error) {
+	return usecase.transactionRepository.Insert(newTransaction)
+}
 
 func NewTransactionUsecase(transactionRepository repository.TransactionRepository) TransactionUsecase {
 	usecase := new(transactionUsecase)

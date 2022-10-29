@@ -41,8 +41,8 @@ func (c *CustomerController) GetById(ctx *gin.Context) {
 
 func (c *CustomerController) CreateNewCustomer(ctx *gin.Context) {
 	custId, _ := ctx.Cookie("session")
-	if custId == "" {
-		response.JsonBadRequestMessage(ctx, "you are registered!")
+	if custId != "" {
+		response.JsonBadRequestMessage(ctx, "you are registered")
 		return
 	}
 
@@ -59,7 +59,7 @@ func (c *CustomerController) CreateNewCustomer(ctx *gin.Context) {
 
 	find := c.usecase.GetByUsername(customer.Username)
 	if find.Id != "" {
-		response.JsonBadRequestMessage(ctx, "username taken!")
+		response.JsonBadRequestMessage(ctx, "username taken")
 		return
 	}
 
