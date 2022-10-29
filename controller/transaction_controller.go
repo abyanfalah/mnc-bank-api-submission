@@ -4,7 +4,7 @@ import (
 	"mnc-bank-api/middleware"
 	"mnc-bank-api/model"
 	"mnc-bank-api/usecase"
-	"mnc-bank-api/utils"
+	response "mnc-bank-api/utils/common_response"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,26 +18,26 @@ type TransactionController struct {
 func (c *TransactionController) ListTransaction(ctx *gin.Context) {
 	list, err := c.usecase.GetAll()
 	if err != nil {
-		utils.JsonErrorInternalServerError(ctx, err, "cannot get transaction list")
+		response.JsonErrorInternalServerError(ctx, err, "cannot get transaction list")
 		return
 	}
 
 	if len(list) == 0 {
-		utils.JsonSuccessMessage(ctx, "list empty")
+		response.JsonSuccessMessage(ctx, "list empty")
 		return
 	}
 
-	utils.JsonDataResponse(ctx, list)
+	response.JsonDataResponse(ctx, list)
 }
 
 // func (c *TransactionController) GetById(ctx *gin.Context) {
 // 	transaction, err := c.usecase.GetById(ctx.Param("id"))
 // 	if err != nil {
-// 		utils.JsonErrorNotFound(ctx, err, "cannot get transaction")
+// 		response.JsonErrorNotFound(ctx, err, "cannot get transaction")
 // 		return
 // 	}
 
-// 	utils.JsonDataResponse(ctx, transaction)
+// 	response.JsonDataResponse(ctx, transaction)
 // }
 
 func (c *TransactionController) CreateNewTransaction(ctx *gin.Context) {
@@ -47,35 +47,35 @@ func (c *TransactionController) CreateNewTransaction(ctx *gin.Context) {
 
 	err := ctx.ShouldBindJSON(&transaction)
 	if err != nil {
-		utils.JsonErrorBadRequestMessage(ctx, err, "cant bind struct")
+		response.JsonErrorBadRequestMessage(ctx, err, "cant bind struct")
 		return
 	}
 
 	if transaction.ReceiverId == customerId {
-		utils.JsonBadRequestMessage(ctx, "invalid receiver. nice joke")
+		response.JsonBadRequestMessage(ctx, "invalid receiver. nice joke")
 		return
 	}
 
 	_, err = c.customerUsecase.GetById(transaction.ReceiverId)
 	if err != nil {
-		utils.JsonErrorBadRequest(ctx, err)
+		response.JsonErrorBadRequest(ctx, err)
 		return
 	}
 
 	if transaction.Amount < 0 {
-		utils.JsonBadRequestMessage(ctx, "invalid payment amount")
+		response.JsonBadRequestMessage(ctx, "invalid payment amount")
 		return
 	}
 
 	if transaction.Amount > customer.Balance {
-		utils.JsonBadRequestMessage(ctx, "payment amount exceed your balance")
+		response.JsonBadRequestMessage(ctx, "payment amount exceed your balance")
 		return
 	}
 
 	// update both customers balance
 	err = c.customerUsecase.UpdateBothBalance(transaction.Amount, customerId, transaction.ReceiverId)
 	if err != nil {
-		utils.JsonErrorInternalServerError(ctx, err, "transaction failed, cannot update both balance")
+		response.JsonErrorInternalServerError(ctx, err, "transaction failed, cannot update both balance")
 		return
 	}
 
@@ -83,11 +83,11 @@ func (c *TransactionController) CreateNewTransaction(ctx *gin.Context) {
 	transaction.SenderId = customer.Id
 	newTransaction, err := c.usecase.Insert(&transaction)
 	if err != nil {
-		utils.JsonErrorInternalServerError(ctx, err, "insert failed")
+		response.JsonErrorInternalServerError(ctx, err, "insert failed")
 		return
 	}
 
-	utils.JsonDataMessageResponse(ctx, newTransaction, "transaction created")
+	response.JsonDataMessageResponse(ctx, newTransaction, "transaction created")
 }
 
 func NewTransactionController(usecase usecase.TransactionUsecase, CustomerUsecase usecase.CustomerUsecase, router *gin.Engine) *TransactionController {

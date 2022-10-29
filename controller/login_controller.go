@@ -7,6 +7,7 @@ import (
 	"mnc-bank-api/usecase"
 	"mnc-bank-api/utils"
 	"mnc-bank-api/utils/authenticator"
+	response "mnc-bank-api/utils/common_response"
 	"mnc-bank-api/utils/jsonrw"
 	"net/http"
 	"time"
@@ -30,13 +31,13 @@ func (lc *LoginController) Login(ctx *gin.Context) {
 
 	err := ctx.ShouldBindJSON(&credential)
 	if err != nil {
-		utils.JsonErrorBadRequestMessage(ctx, err, "cant bind struct")
+		response.JsonErrorBadRequestMessage(ctx, err, "cant bind struct")
 		return
 	}
 
 	customer, err := lc.usecase.GetByCredentials(credential.Username, credential.Password)
 	if err != nil {
-		utils.JsonErrorNotFound(ctx, err)
+		response.JsonErrorNotFound(ctx, err)
 		return
 	}
 
@@ -52,18 +53,18 @@ func (lc *LoginController) Login(ctx *gin.Context) {
 		log.Println("unable to log login:", err)
 	}
 
-	utils.JsonSuccessMessage(ctx, "login success")
+	response.JsonSuccessMessage(ctx, "login success, welcome "+customer.Name)
 }
 
 func (lc *LoginController) Logout(ctx *gin.Context) {
 	customerId, err := ctx.Cookie("session")
 	if err != nil {
-		utils.JsonErrorInternalServerError(ctx, err, "error getting session")
+		response.JsonErrorInternalServerError(ctx, err, "error getting session")
 		return
 	}
 
 	if customerId == "" {
-		utils.JsonBadRequestMessage(ctx, "Not logged in")
+		response.JsonBadRequestMessage(ctx, "Not logged in")
 		return
 	}
 
@@ -78,7 +79,7 @@ func (lc *LoginController) Logout(ctx *gin.Context) {
 	}
 
 	ctx.SetCookie("session", "", -1, "/", "localhost", true, true)
-	utils.JsonSuccessMessage(ctx, "logout success")
+	response.JsonSuccessMessage(ctx, "logout success")
 }
 
 func (lc *LoginController) LoginTest(ctx *gin.Context) {
@@ -88,19 +89,19 @@ func (lc *LoginController) LoginTest(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&credential)
 
 	if err != nil {
-		utils.JsonErrorBadRequestMessage(ctx, err, "cant bind struct")
+		response.JsonErrorBadRequestMessage(ctx, err, "cant bind struct")
 		return
 	}
 
 	customer, err := lc.usecase.GetByCredentials(credential.Username, credential.Password)
 	if err != nil {
-		utils.JsonErrorBadRequestMessage(ctx, err, "invalid credentials")
+		response.JsonErrorBadRequestMessage(ctx, err, "invalid credentials")
 		return
 	}
 
 	_, err = accessToken.GenerateAccessToken(&customer)
 	if err != nil {
-		utils.JsonErrorInternalServerError(ctx, err, "cannot generate token")
+		response.JsonErrorInternalServerError(ctx, err, "cannot generate token")
 		return
 	}
 
