@@ -1,8 +1,7 @@
 package manager
 
 import (
-	"fmt"
-	"warung-makan/config"
+	"mnc-bank-api/config"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -20,20 +19,20 @@ func (i *infraManager) GetSqlDb() *sqlx.DB {
 	return i.DB
 }
 
-func (i *infraManager) initDb() {
-	dsn := fmt.Sprintf("host=%s customer=%s password=%s dbname=%s port=%s sslmode=disable", i.DbConfig.Host, i.DbConfig.Customer, i.DbConfig.Pass, i.DbConfig.DbName, i.DbConfig.Port)
+// func (i *infraManager) initDb() {
+// 	dsn := fmt.Sprintf("host=%s customer=%s password=%s dbname=%s port=%s sslmode=disable", i.DbConfig.Host, i.DbConfig.Customer, i.DbConfig.Pass, i.DbConfig.DbName, i.DbConfig.Port)
 
-	connection, err := sqlx.Connect(i.DbConfig.DbDriver, dsn)
-	if err != nil {
-		panic(err)
-	}
-	i.DB = connection
-	fmt.Println("Connected to database ->", i.DbConfig.DbName)
-}
+// 	connection, err := sqlx.Connect(i.DbConfig.DbDriver, dsn)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	i.DB = connection
+// 	fmt.Println("Connected to database ->", i.DbConfig.DbName)
+// }
 
 func NewInfraManager(config config.Config) InfraManager {
 	infraMan := new(infraManager)
 	infraMan.Config = config
-	infraMan.initDb()
+	// infraMan.initDb()
 	return infraMan
 }

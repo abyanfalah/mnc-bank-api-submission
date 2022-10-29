@@ -1,14 +1,14 @@
 package controller
 
 import (
+	"mnc-bank-api/config"
+	"mnc-bank-api/manager"
+	"mnc-bank-api/middleware"
+	"mnc-bank-api/model"
+	"mnc-bank-api/utils"
+	"mnc-bank-api/utils/authenticator"
 	"net/http"
 	"strings"
-	"warung-makan/config"
-	"warung-makan/manager"
-	"warung-makan/middleware"
-	"warung-makan/model"
-	"warung-makan/utils"
-	"warung-makan/utils/authenticator"
 
 	"github.com/gin-gonic/gin"
 )

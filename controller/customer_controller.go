@@ -1,13 +1,9 @@
 package controller
 
 import (
-	"net/http"
-	"warung-makan/config"
-	"warung-makan/middleware"
-	"warung-makan/model"
-	"warung-makan/usecase"
-	"warung-makan/utils"
-	"warung-makan/utils/authenticator"
+	"mnc-bank-api/usecase"
+
+	"mnc-bank-api/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,23 +14,6 @@ type CustomerController struct {
 }
 
 func (c *CustomerController) ListCustomer(ctx *gin.Context) {
-	if name := ctx.Query("name"); name != "" {
-		customer, err := c.usecase.GetByName(ctx.Query("name"))
-
-		if err != nil {
-			utils.JsonErrorNotFound(ctx, err, "cannot get list")
-			return
-		}
-
-		if len(customer) == 0 {
-			ctx.String(http.StatusBadRequest, "no customer with name like "+name)
-			return
-		}
-
-		utils.JsonDataResponse(ctx, customer)
-		return
-	}
-
 	list, err := c.usecase.GetAll()
 	if err != nil {
 		utils.JsonErrorInternalServerError(ctx, err, "cannot get customer list")
@@ -54,44 +33,30 @@ func (c *CustomerController) GetById(ctx *gin.Context) {
 	utils.JsonDataResponse(ctx, customer)
 }
 
-func (c *CustomerController) CreateNewCustomer(ctx *gin.Context) {
-	var customer model.Customer
-	c.router.MaxMultipartMemory = 8 << 20
+// func (c *CustomerController) CreateNewCustomer(ctx *gin.Context) {
+// 	var customer model.Customer
+// 	c.router.MaxMultipartMemory = 8 << 20
 
-	err := ctx.ShouldBind(&customer)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-			"data":  customer,
-		})
-		return
-	}
+// 	err := ctx.ShouldBind(&customer)
+// 	if err != nil {
+// 		ctx.JSON(http.StatusBadRequest, gin.H{
+// 			"error": err.Error(),
+// 			"data":  customer,
+// 		})
+// 		return
+// 	}
 
-	imageFile, err := ctx.FormFile("image_file")
-	if err != nil {
-		utils.JsonErrorBadRequest(ctx, err, "cant get image")
-		return
-	}
+// 	id := utils.GenerateId()
 
-	id := utils.GenerateId()
+// 	customer.Id = id
+// 	customer, err = c.usecase.Insert(&customer)
+// 	if err != nil {
+// 		utils.JsonErrorInternalServerError(ctx, err, "insert failed")
+// 		return
+// 	}
 
-	imagePath := "./images/customer/" + id + ".jpg"
-	err = ctx.SaveUploadedFile(imageFile, imagePath)
-	if err != nil {
-		utils.JsonErrorInternalServerError(ctx, err, "cannot save image")
-		return
-	}
-
-	customer.Id = id
-	customer.Image = id + ".jpg"
-	customer, err = c.usecase.Insert(&customer)
-	if err != nil {
-		utils.JsonErrorInternalServerError(ctx, err, "insert failed")
-		return
-	}
-
-	utils.JsonDataMessageResponse(ctx, customer, "customer created")
-}
+// 	utils.JsonDataMessageResponse(ctx, customer, "customer created")
+// }
 
 // func (c *CustomerController) UpdateCustomer(ctx *gin.Context) {
 // 	var customer model.Customer
@@ -138,13 +103,13 @@ func NewCustomerController(usecase usecase.CustomerUsecase, router *gin.Engine) 
 		usecase: usecase,
 		router:  router,
 	}
-	authMiddleware := middleware.NewAuthTokenMiddleware(authenticator.NewAccessToken(config.NewConfig().TokenConfig))
+	// authMiddleware := middleware.NewAuthTokenMiddleware(authenticator.NewAccessToken(config.NewConfig().TokenConfig))
 
 	router.GET("/customer", controller.ListCustomer)
 	router.GET("/customer/:id", controller.GetById)
 
-	protectedRoute := router.Group("/customer", authMiddleware.RequireToken())
-	protectedRoute.POST("/", controller.CreateNewCustomer)
+	// protectedRoute := router.Group("/customer", authMiddleware.RequireToken())
+	// protectedRoute.POST("/", controller.CreateNewCustomer)
 	// protectedRoute.PUT("/:id", controller.UpdateCustomer)
 	// protectedRoute.DELETE("/:id", controller.DeleteCustomer)
 

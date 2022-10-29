@@ -1,12 +1,12 @@
 package controller
 
 import (
-	"warung-makan/config"
-	"warung-makan/middleware"
-	"warung-makan/model"
-	"warung-makan/usecase"
-	"warung-makan/utils"
-	"warung-makan/utils/authenticator"
+	"mnc-bank-api/config"
+	"mnc-bank-api/middleware"
+	"mnc-bank-api/model"
+	"mnc-bank-api/usecase"
+	"mnc-bank-api/utils"
+	"mnc-bank-api/utils/authenticator"
 
 	"github.com/gin-gonic/gin"
 )

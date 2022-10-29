@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"warung-makan/model"
-	"warung-makan/repository"
+	"mnc-bank-api/model"
+	"mnc-bank-api/repository"
 )
 
 type transactionUsecase struct {

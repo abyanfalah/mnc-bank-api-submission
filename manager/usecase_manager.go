@@ -1,6 +1,6 @@
 package manager
 
-import "warung-makan/usecase"
+import "mnc-bank-api/usecase"
 
 type usecaseManager struct {
 	repo RepoManager

@@ -1,15 +1,15 @@
 package server
 
 import (
+	"mnc-bank-api/config"
+	"mnc-bank-api/controller"
+	"mnc-bank-api/manager"
+	"mnc-bank-api/utils/authenticator"
 	"strconv"
-	"warung-makan/config"
-	"warung-makan/controller"
-	"warung-makan/manager"
-	"warung-makan/utils/authenticator"
 
 	"github.com/gin-gonic/gin"
 	// _ "github.com/go-sql-driver/mysql"
-	_ "github.com/lib/pq"
+	// _ "github.com/lib/pq"
 )
 
 type appServer struct {
@@ -36,8 +36,8 @@ func (a *appServer) initHandlers() {
 	controller.NewController(a.ucMan, a.engine)
 
 	controller.NewCustomerController(a.ucMan.CustomerUsecase(), a.engine)
-	controller.NewTransactionController(a.ucMan.TransactionUsecase(), a.ucMan.CustomerUsecase(), a.engine)
-	controller.NewLoginController(a.ucMan.CustomerUsecase(), a.engine)
+	// controller.NewTransactionController(a.ucMan.TransactionUsecase(), a.ucMan.CustomerUsecase(), a.engine)
+	// controller.NewLoginController(a.ucMan.CustomerUsecase(), a.engine)
 }
 
 func (a *appServer) Run() {

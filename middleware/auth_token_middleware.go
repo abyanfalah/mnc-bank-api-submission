@@ -1,9 +1,9 @@
 package middleware
 
 import (
+	"mnc-bank-api/utils"
+	"mnc-bank-api/utils/authenticator"
 	"strings"
-	"warung-makan/utils"
-	"warung-makan/utils/authenticator"
 
 	"github.com/gin-gonic/gin"
 )

@@ -2,9 +2,9 @@ package authenticator
 
 import (
 	"fmt"
+	"mnc-bank-api/config"
+	"mnc-bank-api/model"
 	"time"
-	"warung-makan/config"
-	"warung-makan/model"
 
 	"github.com/golang-jwt/jwt/v4"
 )

@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"warung-makan/model"
-	"warung-makan/utils"
+	"mnc-bank-api/model"
+	"mnc-bank-api/utils"
 
 	"github.com/jmoiron/sqlx"
 )

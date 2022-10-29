@@ -1,6 +1,6 @@
 package manager
 
-import "warung-makan/repository"
+import "mnc-bank-api/repository"
 
 type repoManager struct {
 	infra InfraManager
