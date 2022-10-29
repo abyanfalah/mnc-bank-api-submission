@@ -47,12 +47,35 @@ func (c *TransactionController) CreateNewTransaction(ctx *gin.Context) {
 
 	err := ctx.ShouldBindJSON(&transaction)
 	if err != nil {
-		utils.JsonErrorBadRequest(ctx, err, "cant bind struct")
+		utils.JsonErrorBadRequestMessage(ctx, err, "cant bind struct")
+		return
+	}
+
+	if transaction.ReceiverId == customerId {
+		utils.JsonBadRequestMessage(ctx, "invalid receiver. nice joke")
+		return
+	}
+
+	_, err = c.customerUsecase.GetById(transaction.ReceiverId)
+	if err != nil {
+		utils.JsonErrorBadRequest(ctx, err)
+		return
+	}
+
+	if transaction.Amount < 0 {
+		utils.JsonBadRequestMessage(ctx, "invalid payment amount")
 		return
 	}
 
 	if transaction.Amount > customer.Balance {
 		utils.JsonBadRequestMessage(ctx, "payment amount exceed your balance")
+		return
+	}
+
+	// update both customers balance
+	err = c.customerUsecase.UpdateBothBalance(transaction.Amount, customerId, transaction.ReceiverId)
+	if err != nil {
+		utils.JsonErrorInternalServerError(ctx, err, "transaction failed, cannot update both balance")
 		return
 	}
 
@@ -64,8 +87,6 @@ func (c *TransactionController) CreateNewTransaction(ctx *gin.Context) {
 		return
 	}
 
-	// update customer balance
-
 	utils.JsonDataMessageResponse(ctx, newTransaction, "transaction created")
 }
 
@@ -76,13 +97,10 @@ func NewTransactionController(usecase usecase.TransactionUsecase, CustomerUsecas
 		router:          router,
 	}
 
-	router.GET("/transaction", middleware.IsLogin(), controller.ListTransaction)
-	// sessionMiddleware := middleware.NewAuthTokenMiddleware(authenticator.NewAccessToken(config.NewConfig().TokenConfig))
-
-	// protectedRoute := router.Group("/transaction", authMiddleware.RequireToken())
-	// protectedRoute.GET("", controller.ListTransaction)
+	protectedRoute := router.Group("/transaction", middleware.IsLogin())
+	protectedRoute.GET("", controller.ListTransaction)
 	// protectedRoute.GET("/:id", controller.GetById)
-	// protectedRoute.POST("", controller.CreateNewTransaction)
+	protectedRoute.POST("", controller.CreateNewTransaction)
 
 	return &controller
 }

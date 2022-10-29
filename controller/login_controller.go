@@ -30,13 +30,13 @@ func (lc *LoginController) Login(ctx *gin.Context) {
 
 	err := ctx.ShouldBindJSON(&credential)
 	if err != nil {
-		utils.JsonErrorBadRequest(ctx, err, "cant bind struct")
+		utils.JsonErrorBadRequestMessage(ctx, err, "cant bind struct")
 		return
 	}
 
 	customer, err := lc.usecase.GetByCredentials(credential.Username, credential.Password)
 	if err != nil {
-		utils.JsonErrorNotFound(ctx, err, "customer not found")
+		utils.JsonErrorNotFound(ctx, err)
 		return
 	}
 
@@ -88,13 +88,13 @@ func (lc *LoginController) LoginTest(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&credential)
 
 	if err != nil {
-		utils.JsonErrorBadRequest(ctx, err, "cant bind struct")
+		utils.JsonErrorBadRequestMessage(ctx, err, "cant bind struct")
 		return
 	}
 
 	customer, err := lc.usecase.GetByCredentials(credential.Username, credential.Password)
 	if err != nil {
-		utils.JsonErrorBadRequest(ctx, err, "invalid credentials")
+		utils.JsonErrorBadRequestMessage(ctx, err, "invalid credentials")
 		return
 	}
 

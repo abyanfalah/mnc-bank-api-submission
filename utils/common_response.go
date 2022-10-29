@@ -50,14 +50,26 @@ func JsonErrorInternalServerError(ctx *gin.Context, err error, message string) {
 	})
 }
 
-func JsonErrorBadRequest(ctx *gin.Context, err error, message string) {
+func JsonErrorBadRequest(ctx *gin.Context, err error) {
+	ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		"error": err.Error(),
+	})
+}
+
+func JsonErrorBadRequestMessage(ctx *gin.Context, err error, message string) {
 	ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 		"error":   err.Error(),
 		"message": message,
 	})
 }
 
-func JsonErrorNotFound(ctx *gin.Context, err error, message string) {
+func JsonErrorNotFound(ctx *gin.Context, err error) {
+	ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+		"error": err.Error(),
+	})
+}
+
+func JsonErrorNotFoundMessage(ctx *gin.Context, err error, message string) {
 	ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{
 		"error":   err.Error(),
 		"message": message,

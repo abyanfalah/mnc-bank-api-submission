@@ -3,7 +3,6 @@ package controller
 import (
 	"mnc-bank-api/manager"
 	"mnc-bank-api/middleware"
-	"mnc-bank-api/utils/jsonrw"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,8 +20,6 @@ func NewController(usecaseManager manager.UsecaseManager, router *gin.Engine) *C
 	}
 
 	router.GET("/", func(ctx *gin.Context) {
-
-		jsonrw.JsonUpdateList("activity_log", nil)
 		ctx.String(http.StatusOK, "hello world")
 	})
 

@@ -38,7 +38,18 @@ func JsonWriteData(tableName string, model interface{}) error {
 }
 
 func JsonUpdateList(tableName string, newList interface{}) error {
-	err := os.Truncate("database/"+tableName+".json", 0)
+	if newList == nil {
+		return errors.New("aborted, no new list received")
+	}
+
+	tablePath := "database/" + tableName + ".json"
+
+	err := os.Truncate(tablePath, 0)
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(tablePath, []byte(JsonEncode(newList)), os.ModePerm)
 	if err != nil {
 		return err
 	}

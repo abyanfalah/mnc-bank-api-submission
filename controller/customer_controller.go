@@ -31,7 +31,7 @@ func (c *CustomerController) ListCustomer(ctx *gin.Context) {
 func (c *CustomerController) GetById(ctx *gin.Context) {
 	customer, err := c.usecase.GetById(ctx.Param("id"))
 	if err != nil {
-		utils.JsonErrorNotFound(ctx, err, "cannot get customer")
+		utils.JsonErrorNotFound(ctx, err)
 		return
 	}
 

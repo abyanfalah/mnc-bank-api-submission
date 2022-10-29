@@ -20,7 +20,7 @@ type CustomerRepository interface {
 
 	Insert(customer *model.Customer) (model.Customer, error)
 	// Update(customer *model.Customer) (model.Customer, error)
-	UpdateList(list []model.Customer) error
+	UpdateList(newList []model.Customer) error
 	// Delete(id string) error
 }
 
@@ -48,7 +48,7 @@ func (repo *customerRepository) GetById(id string) (model.Customer, error) {
 		}
 	}
 
-	return model.Customer{}, errors.New("unable to find customer from table " + repo.tableName + " : " + err.Error())
+	return model.Customer{}, errors.New("unable to find customer " + id + " from table " + repo.tableName)
 
 }
 
@@ -78,8 +78,11 @@ func (repo *customerRepository) Insert(newCustomer *model.Customer) (model.Custo
 	return *newCustomer, nil
 }
 
-func (repo *customerRepository) UpdateList(list []model.Customer) error {
-	// err :=
+func (repo *customerRepository) UpdateList(newList []model.Customer) error {
+	err := jsonrw.JsonUpdateList(repo.tableName, newList)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

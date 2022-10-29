@@ -7,6 +7,7 @@ import (
 	"mnc-bank-api/model"
 	"mnc-bank-api/utils"
 	"mnc-bank-api/utils/jsonrw"
+	"time"
 )
 
 type transactionRepository struct {
@@ -113,6 +114,7 @@ func (repo *transactionRepository) GetAll() ([]model.Transaction, error) {
 
 func (repo *transactionRepository) Insert(newTransaction *model.Transaction) (model.Transaction, error) {
 	newTransaction.Id = utils.GenerateId()
+	newTransaction.Created_at = time.Now()
 
 	err := jsonrw.JsonWriteData(repo.tableName, newTransaction)
 	if err != nil {

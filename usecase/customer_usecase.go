@@ -43,14 +43,19 @@ func (usecase *customerUsecase) Insert(newCustomer *model.Customer) (model.Custo
 }
 
 func (usecase *customerUsecase) UpdateBothBalance(payAmount int, senderId, receiverId string) error {
-	// list, _ := usecase.GetAll()
+	list, _ := usecase.GetAll()
 
-	// for index, each := range list {
+	for index, each := range list {
+		if each.Id == senderId {
+			list[index].Balance -= payAmount
+		}
 
-	// }
+		if each.Id == receiverId {
+			list[index].Balance += payAmount
+		}
+	}
 
-	return nil
-
+	return usecase.customerRepository.UpdateList(list)
 }
 
 // func (usecase *customerUsecase) Update(newCustomer *model.Customer) (model.Customer, error) {
