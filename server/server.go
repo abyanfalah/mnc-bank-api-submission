@@ -21,8 +21,8 @@ type appServer struct {
 
 func NewAppServer() *appServer {
 	config := config.NewConfig()
-	infraMan := manager.NewInfraManager(config)
-	repoMan := manager.NewRepoManager(infraMan)
+	// infraMan := manager.NewInfraManager()
+	repoMan := manager.NewRepoManager()
 
 	return &appServer{
 		ucMan:        manager.NewUsecaseManager(repoMan),
@@ -36,8 +36,8 @@ func (a *appServer) initHandlers() {
 	controller.NewController(a.ucMan, a.engine)
 
 	controller.NewCustomerController(a.ucMan.CustomerUsecase(), a.engine)
-	// controller.NewTransactionController(a.ucMan.TransactionUsecase(), a.ucMan.CustomerUsecase(), a.engine)
-	// controller.NewLoginController(a.ucMan.CustomerUsecase(), a.engine)
+	controller.NewTransactionController(a.ucMan.TransactionUsecase(), a.ucMan.CustomerUsecase(), a.engine)
+	controller.NewLoginController(a.ucMan.CustomerUsecase(), a.engine)
 }
 
 func (a *appServer) Run() {

@@ -14,7 +14,6 @@ type Credential struct {
 }
 
 type Session struct {
-	Id       string `json:"id" form:"id" db:"id" `
-	Username string `json:"username" db:"username" binding:"required"`
-	Name     string `json:"name" form:"name" db:"name" binding:"required"`
+	CustomerId string
+	Token      string
 }

@@ -66,7 +66,13 @@ func JsonErrorNotFound(ctx *gin.Context, err error, message string) {
 
 func JsonErrorUnauthorized(ctx *gin.Context, err error, message string) {
 	ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-		"error":   err.Error(),
+		"error":   err,
+		"message": message,
+	})
+}
+
+func JsonUnauthorized(ctx *gin.Context, message string) {
+	ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 		"message": message,
 	})
 }

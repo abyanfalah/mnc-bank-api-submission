@@ -1,11 +1,12 @@
 package repository
 
 import (
-	"fmt"
+	"encoding/json"
+	"errors"
+	"io/ioutil"
 	"mnc-bank-api/model"
-	"mnc-bank-api/utils/jsonio"
-
-	"github.com/jmoiron/sqlx"
+	"mnc-bank-api/utils"
+	"mnc-bank-api/utils/jsonrw"
 )
 
 type customerRepository struct {
@@ -13,71 +14,78 @@ type customerRepository struct {
 }
 
 type CustomerRepository interface {
-	GetAll() (interface{}, error)
-	GetById(id string) (interface{}, error)
-	// GetById(id string) (model.Customer, error)
-	// GetByCredentials(customername, password string) (interface{}, error)
+	GetAll() ([]model.Customer, error)
+	GetById(id string) (model.Customer, error)
+	GetByCredentials(customername, password string) (model.Customer, error)
 
-	// Insert(customer *interface{}) (interface{}, error)
-	// Update(customer *interface{}) (interface{}, error)
+	Insert(customer *model.Customer) (model.Customer, error)
+	// Update(customer *model.Customer) (model.Customer, error)
+	UpdateList(list []model.Customer) error
 	// Delete(id string) error
 }
 
-func (repo *customerRepository) GetAll() (interface{}, error) {
-	customers, err := jsonio.JsonReadData(repo.tableName)
+func (repo *customerRepository) GetAll() ([]model.Customer, error) {
+	var list []model.Customer
+
+	file, err := ioutil.ReadFile("database/" + repo.tableName + ".json")
 	if err != nil {
-		return nil, err
+		return nil, errors.New("unable to read json file from table " + repo.tableName + " : " + err.Error())
 	}
-	return customers, nil
+
+	json.Unmarshal(file, &list)
+	return list, nil
 }
 
-// func (repo *customerRepository) GetById(id string) (model.Customer, error) {
-func (repo *customerRepository) GetById(id string) (interface{}, error) {
-	// var datas []model.Customer
-	list, _ := jsonio.JsonReadData(repo.tableName)
-	// for index, each := range list {
+func (repo *customerRepository) GetById(id string) (model.Customer, error) {
+	list, err := repo.GetAll()
+	if err != nil {
+		return model.Customer{}, errors.New("unable to read json file from table " + repo.tableName + " : " + err.Error())
+	}
 
-	// }
+	for index, each := range list {
+		if each.Id == id {
+			return list[index], nil
+		}
+	}
 
-	fmt.Println(list)
-
-	return model.Customer{}, nil
+	return model.Customer{}, errors.New("unable to find customer from table " + repo.tableName + " : " + err.Error())
 
 }
 
-// func (repo *customerRepository) GetByName(name string) ([]interface{}, error) {
-// 	// var customer []interface{}
-// 	// err := p.db.Select(&customer, utils.USER_GET_BY_NAME, "%"+name+"%")
-// 	// if err != nil {
-// 	// 	return nil, err
-// 	// }
-// 	// return customer, nil
-// }
+func (repo *customerRepository) GetByCredentials(username, password string) (model.Customer, error) {
+	list, err := repo.GetAll()
+	if err != nil {
+		return model.Customer{}, err
+	}
 
-// func (repo *customerRepository) GetByCredentials(customername, password string) (interface{}, error) {
-// 	// var customer interface{}
-// 	// err := p.db.Get(&customer, utils.USER_GET_BY_CREDENTIALS, customername, password)
-// 	// if err != nil {
-// 	// 	return nil, err
-// 	// }
-// 	// return customer, nil
-// }
+	for index, each := range list {
+		if each.Username == username && each.Password == utils.Sha1(password) {
+			return list[index], nil
+		}
+	}
 
-// func (repo *customerRepository) Insert(newCustomer *interface{}) (interface{}, error) {
-// 	_, err := p.db.NamedExec(utils.USER_INSERT, newCustomer)
-// 	// if err != nil {
-// 	// 	return nil, err
-// 	// }
-// 	// customer := newCustomer
-// 	// return *customer, nil
-// }
+	return model.Customer{}, errors.New("invalid credential")
+}
 
-// func (repo *customerRepository) Update(newData *interface{}) (interface{}, error) {
-// 	_, err := p.db.NamedExec(utils.USER_UPDATE, newData)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return *newData, nil
+func (repo *customerRepository) Insert(newCustomer *model.Customer) (model.Customer, error) {
+	newCustomer.Id = utils.GenerateId()
+	newCustomer.Password = utils.Sha1(newCustomer.Password)
+	err := jsonrw.JsonWriteData(repo.tableName, newCustomer)
+	if err != nil {
+		return model.Customer{}, errors.New("unable to write to json table " + repo.tableName + " : " + err.Error())
+	}
+
+	return *newCustomer, nil
+}
+
+func (repo *customerRepository) UpdateList(list []model.Customer) error {
+	// err :=
+
+	return nil
+}
+
+// func (repo *customerRepository) Update(newData *model.Customer) (model.Customer, error) {
+
 // }
 
 // func (repo *customerRepository) Delete(id string) error {
@@ -85,8 +93,8 @@ func (repo *customerRepository) GetById(id string) (interface{}, error) {
 // 	return err
 // }
 
-func NewCustomerRepository(db *sqlx.DB) CustomerRepository {
+func NewCustomerRepository(tableName string) CustomerRepository {
 	repo := new(customerRepository)
-	repo.tableName = "customer"
+	repo.tableName = tableName
 	return repo
 }

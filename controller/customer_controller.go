@@ -1,7 +1,12 @@
 package controller
 
 import (
+	"log"
+	"mnc-bank-api/model"
 	"mnc-bank-api/usecase"
+	"mnc-bank-api/utils/jsonrw"
+	"net/http"
+	"time"
 
 	"mnc-bank-api/utils"
 
@@ -33,30 +38,38 @@ func (c *CustomerController) GetById(ctx *gin.Context) {
 	utils.JsonDataResponse(ctx, customer)
 }
 
-// func (c *CustomerController) CreateNewCustomer(ctx *gin.Context) {
-// 	var customer model.Customer
-// 	c.router.MaxMultipartMemory = 8 << 20
+func (c *CustomerController) CreateNewCustomer(ctx *gin.Context) {
+	var customer model.Customer
 
-// 	err := ctx.ShouldBind(&customer)
-// 	if err != nil {
-// 		ctx.JSON(http.StatusBadRequest, gin.H{
-// 			"error": err.Error(),
-// 			"data":  customer,
-// 		})
-// 		return
-// 	}
+	err := ctx.ShouldBind(&customer)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+			"data":  customer,
+		})
+		return
+	}
 
-// 	id := utils.GenerateId()
+	customer, err = c.usecase.Insert(&customer)
+	if err != nil {
+		utils.JsonErrorInternalServerError(ctx, err, "insert failed")
+		return
+	}
 
-// 	customer.Id = id
-// 	customer, err = c.usecase.Insert(&customer)
-// 	if err != nil {
-// 		utils.JsonErrorInternalServerError(ctx, err, "insert failed")
-// 		return
-// 	}
+	err = jsonrw.JsonWriteData("activity_log", model.Activity{
+		Id:         utils.GenerateId(),
+		CustomerId: customer.Id,
+		Activity:   "register",
+		Time:       time.Now(),
+	})
+	if err != nil {
+		// utils.JsonErrorInternalServerError(ctx, err, "unable to log registration")
+		// return
+		log.Println("unable to log registration:", err)
+	}
 
-// 	utils.JsonDataMessageResponse(ctx, customer, "customer created")
-// }
+	utils.JsonDataMessageResponse(ctx, customer, "customer created")
+}
 
 // func (c *CustomerController) UpdateCustomer(ctx *gin.Context) {
 // 	var customer model.Customer
@@ -103,10 +116,10 @@ func NewCustomerController(usecase usecase.CustomerUsecase, router *gin.Engine) 
 		usecase: usecase,
 		router:  router,
 	}
-	// authMiddleware := middleware.NewAuthTokenMiddleware(authenticator.NewAccessToken(config.NewConfig().TokenConfig))
 
 	router.GET("/customer", controller.ListCustomer)
 	router.GET("/customer/:id", controller.GetById)
+	router.POST("/customer", controller.CreateNewCustomer)
 
 	// protectedRoute := router.Group("/customer", authMiddleware.RequireToken())
 	// protectedRoute.POST("/", controller.CreateNewCustomer)

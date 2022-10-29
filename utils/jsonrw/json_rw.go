@@ -1,4 +1,4 @@
-package jsonio
+package jsonrw
 
 import (
 	"encoding/json"
@@ -37,6 +37,11 @@ func JsonWriteData(tableName string, model interface{}) error {
 	return nil
 }
 
-// func JsonFindById(tableName, id string) error {
+func JsonUpdateList(tableName string, newList interface{}) error {
+	err := os.Truncate("database/"+tableName+".json", 0)
+	if err != nil {
+		return err
+	}
 
-// }
+	return nil
+}

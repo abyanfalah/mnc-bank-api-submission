@@ -10,24 +10,21 @@ type customerUsecase struct {
 }
 
 type CustomerUsecase interface {
-	GetAll() (interface{}, error)
-	GetById(id string) (interface{}, error)
-	// GetById(id string) (model.Customer, error)
+	GetAll() ([]model.Customer, error)
+	GetById(id string) (model.Customer, error)
 	// GetByName(name string) (interface{}, error)
-	// GetByCredentials(customername, password string) (model.Customer, error)
+	GetByCredentials(username, password string) (model.Customer, error)
 
-	// Insert(customer *model.Customer) (model.Customer, error)
+	Insert(customer *model.Customer) (model.Customer, error)
+	UpdateBothBalance(payAmount int, senderId, receiverId string) error
+
 	// Update(customer *model.Customer) (model.Customer, error)
 	// Delete(id string) error
 }
 
-func (usecase *customerUsecase) GetAll() (interface{}, error) {
+func (usecase *customerUsecase) GetAll() ([]model.Customer, error) {
 	return usecase.customerRepository.GetAll()
 }
-
-// func (usecase *customerUsecase) GetById(id string) (interface{}, error) {
-// 	return usecase.customerRepository.GetById(id)
-// }
 
 func (usecase *customerUsecase) GetById(id string) (model.Customer, error) {
 	return usecase.customerRepository.GetById(id)
@@ -37,13 +34,24 @@ func (usecase *customerUsecase) GetById(id string) (model.Customer, error) {
 // 	return usecase.customerRepository.GetByName(name)
 // }
 
-// func (usecase *customerUsecase) GetByCredentials(customername, password string) (model.Customer, error) {
-// 	return usecase.customerRepository.GetByCredentials(customername, password)
-// }
+func (usecase *customerUsecase) GetByCredentials(username, password string) (model.Customer, error) {
+	return usecase.customerRepository.GetByCredentials(username, password)
+}
 
-// func (usecase *customerUsecase) Insert(newCustomer *model.Customer) (model.Customer, error) {
-// 	return usecase.customerRepository.Insert(newCustomer)
-// }
+func (usecase *customerUsecase) Insert(newCustomer *model.Customer) (model.Customer, error) {
+	return usecase.customerRepository.Insert(newCustomer)
+}
+
+func (usecase *customerUsecase) UpdateBothBalance(payAmount int, senderId, receiverId string) error {
+	// list, _ := usecase.GetAll()
+
+	// for index, each := range list {
+
+	// }
+
+	return nil
+
+}
 
 // func (usecase *customerUsecase) Update(newCustomer *model.Customer) (model.Customer, error) {
 // 	return usecase.customerRepository.Update(newCustomer)

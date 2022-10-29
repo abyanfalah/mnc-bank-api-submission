@@ -1,83 +1,121 @@
 package controller
 
-// import (
-// 	"mnc-bank-api/config"
-// 	"mnc-bank-api/model"
-// 	"mnc-bank-api/usecase"
-// 	"mnc-bank-api/utils"
-// 	"mnc-bank-api/utils/authenticator"
-// 	"net/http"
+import (
+	"log"
+	"mnc-bank-api/config"
+	"mnc-bank-api/model"
+	"mnc-bank-api/usecase"
+	"mnc-bank-api/utils"
+	"mnc-bank-api/utils/authenticator"
+	"mnc-bank-api/utils/jsonrw"
+	"net/http"
+	"time"
 
-// 	"github.com/gin-gonic/gin"
-// )
+	"github.com/gin-gonic/gin"
+)
 
-// type LoginController struct {
-// 	usecase usecase.CustomerUsecase
-// 	router  *gin.Engine
-// }
+type LoginController struct {
+	usecase usecase.CustomerUsecase
+	router  *gin.Engine
+}
 
-// func (lc *LoginController) Login(ctx *gin.Context) {
-// 	var credential model.Credential
-// 	accessToken := authenticator.NewAccessToken(config.NewConfig().TokenConfig)
+func (lc *LoginController) Login(ctx *gin.Context) {
+	customerId, _ := ctx.Cookie("session")
+	if customerId != "" {
+		ctx.Redirect(300, "/")
+		return
+	}
 
-// 	err := ctx.ShouldBindJSON(&credential)
-// 	if err != nil {
-// 		utils.JsonErrorBadRequest(ctx, err, "cant bind struct")
-// 		return
-// 	}
+	var credential model.Credential
 
-// 	customer, err := lc.usecase.GetByCredentials(credential.Username, credential.Password)
-// 	if err != nil {
-// 		utils.JsonErrorBadRequest(ctx, err, "invalid credentials")
-// 		return
-// 	}
+	err := ctx.ShouldBindJSON(&credential)
+	if err != nil {
+		utils.JsonErrorBadRequest(ctx, err, "cant bind struct")
+		return
+	}
 
-// 	token, err := accessToken.GenerateAccessToken(&customer)
-// 	if err != nil {
-// 		utils.JsonErrorInternalServerError(ctx, err, "cannot generate token")
-// 		return
-// 	}
+	customer, err := lc.usecase.GetByCredentials(credential.Username, credential.Password)
+	if err != nil {
+		utils.JsonErrorNotFound(ctx, err, "customer not found")
+		return
+	}
 
-// 	ctx.JSON(http.StatusOK, gin.H{
-// 		"message": "you are logged in",
-// 		"token":   token,
-// 	})
-// }
+	ctx.SetCookie("session", customer.Id, 3600, "/", "localhost", true, true)
 
-// func (lc *LoginController) LoginTest(ctx *gin.Context) {
-// 	var credential model.Credential
-// 	accessToken := authenticator.NewAccessToken(config.NewConfig().TokenConfig)
+	err = jsonrw.JsonWriteData("activity_log", model.Activity{
+		Id:         utils.GenerateId(),
+		CustomerId: customer.Id,
+		Activity:   "login",
+		Time:       time.Now(),
+	})
+	if err != nil {
+		log.Println("unable to log login:", err)
+	}
 
-// 	err := ctx.ShouldBindJSON(&credential)
+	utils.JsonSuccessMessage(ctx, "login success")
+}
 
-// 	if err != nil {
-// 		utils.JsonErrorBadRequest(ctx, err, "cant bind struct")
-// 		return
-// 	}
+func (lc *LoginController) Logout(ctx *gin.Context) {
+	customerId, err := ctx.Cookie("session")
+	if err != nil {
+		utils.JsonErrorInternalServerError(ctx, err, "error getting session")
+		return
+	}
 
-// 	customer, err := lc.usecase.GetByCredentials(credential.Username, credential.Password)
-// 	if err != nil {
-// 		utils.JsonErrorBadRequest(ctx, err, "invalid credentials")
-// 		return
-// 	}
+	if customerId == "" {
+		utils.JsonBadRequestMessage(ctx, "Not logged in")
+		return
+	}
 
-// 	_, err = accessToken.GenerateAccessToken(&customer)
-// 	if err != nil {
-// 		utils.JsonErrorInternalServerError(ctx, err, "cannot generate token")
-// 		return
-// 	}
+	err = jsonrw.JsonWriteData("activity_log", model.Activity{
+		Id:         utils.GenerateId(),
+		CustomerId: customerId,
+		Activity:   "logout",
+		Time:       time.Now(),
+	})
+	if err != nil {
+		log.Println("unable to log logout:", err)
+	}
 
-// 	ctx.JSON(http.StatusOK, customer)
-// }
+	ctx.SetCookie("session", "", -1, "/", "localhost", true, true)
+	utils.JsonSuccessMessage(ctx, "logout success")
+}
 
-// func NewLoginController(usecase usecase.CustomerUsecase, router *gin.Engine) *LoginController {
-// 	controller := LoginController{
-// 		usecase: usecase,
-// 		router:  router,
-// 	}
+func (lc *LoginController) LoginTest(ctx *gin.Context) {
+	var credential model.Credential
+	accessToken := authenticator.NewAccessToken(config.NewConfig().TokenConfig)
 
-// 	router.POST("/login", controller.Login)
-// 	router.POST("/test/login", controller.LoginTest)
+	err := ctx.ShouldBindJSON(&credential)
 
-// 	return &controller
-// }
+	if err != nil {
+		utils.JsonErrorBadRequest(ctx, err, "cant bind struct")
+		return
+	}
+
+	customer, err := lc.usecase.GetByCredentials(credential.Username, credential.Password)
+	if err != nil {
+		utils.JsonErrorBadRequest(ctx, err, "invalid credentials")
+		return
+	}
+
+	_, err = accessToken.GenerateAccessToken(&customer)
+	if err != nil {
+		utils.JsonErrorInternalServerError(ctx, err, "cannot generate token")
+		return
+	}
+
+	ctx.JSON(http.StatusOK, customer)
+}
+
+func NewLoginController(usecase usecase.CustomerUsecase, router *gin.Engine) *LoginController {
+	controller := LoginController{
+		usecase: usecase,
+		router:  router,
+	}
+
+	router.POST("/login", controller.Login)
+	router.POST("/logout", controller.Logout)
+	router.POST("/test/login", controller.LoginTest)
+
+	return &controller
+}

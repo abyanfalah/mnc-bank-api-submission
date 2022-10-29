@@ -1,142 +1,16 @@
 [
 	{
-		"balance": 0,
-		"id": "69ac023c-08a0-49b0-880f-d5f11e21f5b9",
-		"name": "cust0",
-		"password": "12345",
-		"username": "uname0"
+		"balance": 1000,
+		"id": "25cba835-4666-4773-a773-13edbfca12b7",
+		"name": "andy",
+		"password": "74df3368cfbb67253eac6f78ce728bbf3827e840",
+		"username": "andy123"
 	},
 	{
-		"balance": 1450,
-		"id": "75700b5a-4b2d-42c4-bb24-5c753a9767a1",
-		"name": "cust1",
-		"password": "12345",
-		"username": "uname1"
-	},
-	{
-		"balance": 2900,
-		"id": "5fc66dff-da40-43e6-a4d1-9912eb554a3b",
-		"name": "cust2",
-		"password": "12345",
-		"username": "uname2"
-	},
-	{
-		"balance": 4350,
-		"id": "9941c095-94a4-4871-8f9c-2589380c4e58",
-		"name": "cust3",
-		"password": "12345",
-		"username": "uname3"
-	},
-	{
-		"balance": 5800,
-		"id": "ab9bd61c-6ad1-4bd2-be57-3eee687fda83",
-		"name": "cust4",
-		"password": "12345",
-		"username": "uname4"
-	},
-	{
-		"balance": 7250,
-		"id": "bce33c3f-27c4-431b-8727-8310d8bb4c20",
-		"name": "cust5",
-		"password": "12345",
-		"username": "uname5"
-	},
-	{
-		"balance": 8700,
-		"id": "48184719-e965-4d28-835f-6c4b22b7f7bc",
-		"name": "cust6",
-		"password": "12345",
-		"username": "uname6"
-	},
-	{
-		"balance": 10150,
-		"id": "9745142d-92d1-4777-91de-6966296b2dd8",
-		"name": "cust7",
-		"password": "12345",
-		"username": "uname7"
-	},
-	{
-		"balance": 11600,
-		"id": "049ce289-959f-4881-af4a-bf50b1d99eaa",
-		"name": "cust8",
-		"password": "12345",
-		"username": "uname8"
-	},
-	{
-		"balance": 13050,
-		"id": "c2ee8d69-d290-49e3-940a-907f9da3dff7",
-		"name": "cust9",
-		"password": "12345",
-		"username": "uname9"
-	},
-	{
-		"balance": 14500,
-		"id": "793e0d4c-79b1-4c6b-91c8-e00f3b47cc5b",
-		"name": "cust10",
-		"password": "12345",
-		"username": "uname10"
-	},
-	{
-		"balance": 15950,
-		"id": "b6587b85-c390-47f1-84c8-9e3318adf81a",
-		"name": "cust11",
-		"password": "12345",
-		"username": "uname11"
-	},
-	{
-		"balance": 17400,
-		"id": "c8847008-8061-4a7b-a1ae-bf9169a60e3a",
-		"name": "cust12",
-		"password": "12345",
-		"username": "uname12"
-	},
-	{
-		"balance": 18850,
-		"id": "846d96ad-2dd6-4334-9a69-cdaae6a5706a",
-		"name": "cust13",
-		"password": "12345",
-		"username": "uname13"
-	},
-	{
-		"balance": 20300,
-		"id": "a3eaf498-f855-4cdb-a93f-efe44ceae9a2",
-		"name": "cust14",
-		"password": "12345",
-		"username": "uname14"
-	},
-	{
-		"balance": 21750,
-		"id": "3c899aa4-8e95-466a-9e70-1cac2db28b5e",
-		"name": "cust15",
-		"password": "12345",
-		"username": "uname15"
-	},
-	{
-		"balance": 23200,
-		"id": "17c44ea5-88fc-4312-b5df-35421a7fd793",
-		"name": "cust16",
-		"password": "12345",
-		"username": "uname16"
-	},
-	{
-		"balance": 24650,
-		"id": "491b1e05-9c62-4687-8f9d-e828c614171f",
-		"name": "cust17",
-		"password": "12345",
-		"username": "uname17"
-	},
-	{
-		"balance": 26100,
-		"id": "82141070-fcb4-438f-af30-ba61fc3c4207",
-		"name": "cust18",
-		"password": "12345",
-		"username": "uname18"
-	},
-	{
-		"id": "bf5c1b2a-9fb9-4cd7-a3de-f7b96ba104ba",
-		"name": "cust19",
-		"username": "uname19",
-		"password": "12345",
-		"balance": 27550
+		"id": "dc8fd17d-935f-4002-b683-7a55ab119f34",
+		"name": "budi",
+		"username": "budi",
+		"password": "83161a62f22277c65a6cdb7ebc314f218c376c63",
+		"balance": 2000
 	}
 ]

@@ -3,7 +3,8 @@ package manager
 import "mnc-bank-api/repository"
 
 type repoManager struct {
-	infra InfraManager
+	customerTableName    string
+	transactionTableName string
 }
 
 type RepoManager interface {
@@ -12,15 +13,16 @@ type RepoManager interface {
 }
 
 func (rm *repoManager) CustomerRepo() repository.CustomerRepository {
-	return repository.NewCustomerRepository(rm.infra.GetSqlDb())
+	return repository.NewCustomerRepository(rm.customerTableName)
 }
 
 func (rm *repoManager) TransactionRepo() repository.TransactionRepository {
-	return repository.NewTransactionRepository(rm.infra.GetSqlDb())
+	return repository.NewTransactionRepository(rm.transactionTableName)
 }
 
-func NewRepoManager(infra InfraManager) RepoManager {
+func NewRepoManager() RepoManager {
 	return &repoManager{
-		infra: infra,
+		customerTableName:    "customer",
+		transactionTableName: "transaction",
 	}
 }
