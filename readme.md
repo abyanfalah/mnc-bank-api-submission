@@ -2,9 +2,15 @@
 
 This is my submission project of MNC Bank Backend Developer test.
 
+This project uses Gin as web framework.
+
 
 ## Installation
 You can directly download the build [here](https://github.com/abyanfalah/mnc-bank-api-submission/releases/tag/bin)
+and run the app by executing it:
+```bash
+./mnc-bank-api
+```
 
 ### Running the source code
 
