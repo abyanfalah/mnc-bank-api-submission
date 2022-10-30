@@ -14,6 +14,13 @@ func Migrate() {
 	fmt.Println("Migrating (creating required files only)")
 	defer fmt.Println("migration finished")
 
+	if !fileExists("database") {
+		err := os.Mkdir("./database", os.FileMode(0777))
+		if err != nil {
+			panic(err)
+		}
+	}
+
 	tables := []string{
 		"customer",
 		"transaction",
