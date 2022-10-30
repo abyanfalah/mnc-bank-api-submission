@@ -4,6 +4,9 @@ This is my submission project of MNC Bank Backend Developer test.
 
 This project uses Gin as web framework.
 
+No RDBMS involved in this project, it uses json files to store data.
+
+At the very least, this app is usable for a real-life simple payment case.
 
 ## Installation
 You can directly download the build [here](https://github.com/abyanfalah/mnc-bank-api-submission/releases/tag/bin)
