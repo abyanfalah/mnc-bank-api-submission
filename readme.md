@@ -48,7 +48,7 @@ You can just execute or run the app and it will tell you which port this app is 
 The starting point is `localhost:8000`
 and will iterate by itself if current port is used until unused one found.
 
-Make sure to match the `base_url` in environment variables of your API client to the port where the API listens to.
+Make sure to create and match the `base_url` in environment variables of your API client to the port where the API listens to.
 
 ## Usage
 You can get a brief guide and simple usage explanation by importing [this file](https://github.com/abyanfalah/mnc-bank-api-submission/blob/main/Request%20collection.postman_collection.json) to Postman API client.
