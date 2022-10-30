@@ -50,7 +50,7 @@ func (tc *TransactionController) CreateNewTransaction(ctx *gin.Context) {
 		return
 	}
 
-	if transaction.ReceiverId == customerId {
+	if transaction.ReceiverId == customerId || transaction.ReceiverId == "" {
 		response.JsonBadRequestMessage(ctx, "invalid receiver. nice joke")
 		return
 	}

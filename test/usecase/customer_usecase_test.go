@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-var dummyList = []model.Customer{
+var dummyCustomerList = []model.Customer{
 	{
 		Id:       "test",
 		Name:     "test",
@@ -48,16 +48,16 @@ var afterPayment = []model.Customer{
 	},
 }
 
-type repoMock struct {
+type customerRepoMock struct {
 	mock.Mock
 }
 
 type CustomerUsecaseTestSuite struct {
 	suite.Suite
-	repoMock *repoMock
+	customerRepoMock *customerRepoMock
 }
 
-func (r *repoMock) GetAll() ([]model.Customer, error) {
+func (r *customerRepoMock) GetAll() ([]model.Customer, error) {
 	args := r.Called()
 	if args.Get(1) != nil {
 		return nil, args.Error(1)
@@ -66,7 +66,7 @@ func (r *repoMock) GetAll() ([]model.Customer, error) {
 	return args[0].([]model.Customer), nil
 }
 
-func (r *repoMock) UpdateList(newList []model.Customer) error {
+func (r *customerRepoMock) UpdateList(newList []model.Customer) error {
 	args := r.Called(newList)
 	if args.Get(0) != nil {
 		return args.Error(1)
@@ -76,19 +76,19 @@ func (r *repoMock) UpdateList(newList []model.Customer) error {
 }
 
 func (suite *CustomerUsecaseTestSuite) TestGetAll_Success() {
-	suite.repoMock.On("GetAll").Return(dummyList, nil)
+	suite.customerRepoMock.On("GetAll").Return(dummyCustomerList, nil)
 
-	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.repoMock)
+	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.customerRepoMock)
 	actual, err := CustomerUsecaseTest.GetAll()
 
 	assert.Nil(suite.T(), err)
-	assert.Equal(suite.T(), dummyList, actual)
+	assert.Equal(suite.T(), dummyCustomerList, actual)
 }
 
 func (suite *CustomerUsecaseTestSuite) TestGetAll_Failed() {
-	suite.repoMock.On("GetAll").Return(nil, errors.New("failed to get all user"))
+	suite.customerRepoMock.On("GetAll").Return(nil, errors.New("failed to get all user"))
 
-	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.repoMock)
+	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.customerRepoMock)
 	actual, err := CustomerUsecaseTest.GetAll()
 
 	assert.NotNil(suite.T(), err)
@@ -96,49 +96,48 @@ func (suite *CustomerUsecaseTestSuite) TestGetAll_Failed() {
 }
 
 func (suite *CustomerUsecaseTestSuite) TestGetById_Success() {
-	suite.repoMock.On("GetAll").Return(dummyList, nil)
+	suite.customerRepoMock.On("GetAll").Return(dummyCustomerList, nil)
 
-	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.repoMock)
-	actual, err := CustomerUsecaseTest.GetById(dummyList[0].Id)
+	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.customerRepoMock)
+	actual, err := CustomerUsecaseTest.GetById(dummyCustomerList[0].Id)
 
 	assert.Nil(suite.T(), err)
-	return
-	assert.Equal(suite.T(), dummyList[0], actual)
+	assert.Equal(suite.T(), dummyCustomerList[0], actual)
 }
 
 func (suite *CustomerUsecaseTestSuite) TestGetById_Failed() {
-	suite.repoMock.On("GetAll").Return(nil, errors.New("failed to get customer "+dummyList[0].Id))
+	suite.customerRepoMock.On("GetAll").Return(nil, errors.New("failed to get customer "+dummyCustomerList[0].Id))
 
-	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.repoMock)
-	actual, err := CustomerUsecaseTest.GetById(dummyList[0].Id)
+	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.customerRepoMock)
+	actual, err := CustomerUsecaseTest.GetById(dummyCustomerList[0].Id)
 
 	assert.NotNil(suite.T(), err)
 	assert.Equal(suite.T(), model.Customer{}, actual)
 }
 
 func (suite *CustomerUsecaseTestSuite) TestGetByUsername_Success() {
-	suite.repoMock.On("GetAll").Return(dummyList, nil)
+	suite.customerRepoMock.On("GetAll").Return(dummyCustomerList, nil)
 
-	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.repoMock)
-	actual := CustomerUsecaseTest.GetByUsername(dummyList[0].Username)
+	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.customerRepoMock)
+	actual := CustomerUsecaseTest.GetByUsername(dummyCustomerList[0].Username)
 
-	assert.Equal(suite.T(), dummyList[0], actual)
+	assert.Equal(suite.T(), dummyCustomerList[0], actual)
 }
 
 func (suite *CustomerUsecaseTestSuite) TestGetByUsername_Failed() {
-	suite.repoMock.On("GetAll").Return(nil, errors.New("failed to get customer "+dummyList[0].Username))
+	suite.customerRepoMock.On("GetAll").Return(nil, errors.New("failed to get customer "+dummyCustomerList[0].Username))
 
-	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.repoMock)
-	actual := CustomerUsecaseTest.GetByUsername(dummyList[0].Username)
+	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.customerRepoMock)
+	actual := CustomerUsecaseTest.GetByUsername(dummyCustomerList[0].Username)
 
 	assert.Equal(suite.T(), model.Customer{}, actual)
 }
 
 func (suite *CustomerUsecaseTestSuite) TestGetByCredentials_Success() {
-	customer := dummyList[0]
-	suite.repoMock.On("GetAll").Return(dummyList, nil)
+	customer := dummyCustomerList[0]
+	suite.customerRepoMock.On("GetAll").Return(dummyCustomerList, nil)
 
-	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.repoMock)
+	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.customerRepoMock)
 	actual, err := CustomerUsecaseTest.GetByCredentials(customer.Username, "test")
 
 	assert.Nil(suite.T(), err)
@@ -146,10 +145,10 @@ func (suite *CustomerUsecaseTestSuite) TestGetByCredentials_Success() {
 }
 
 func (suite *CustomerUsecaseTestSuite) TestGetByCredentials_Failed() {
-	customer := dummyList[0]
-	suite.repoMock.On("GetAll").Return(nil, errors.New("failed to get customer "+dummyList[0].Username))
+	customer := dummyCustomerList[0]
+	suite.customerRepoMock.On("GetAll").Return(nil, errors.New("failed to get customer "+dummyCustomerList[0].Username))
 
-	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.repoMock)
+	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.customerRepoMock)
 	actual, err := CustomerUsecaseTest.GetByCredentials(customer.Username, "test")
 
 	assert.NotNil(suite.T(), err)
@@ -173,12 +172,12 @@ func (suite *CustomerUsecaseTestSuite) TestInsert_Success() {
 		Balance:  234,
 	}
 
-	newList := append(dummyList, expected)
+	newList := append(dummyCustomerList, expected)
 
-	suite.repoMock.On("UpdateList", newList).Return([]model.Customer{}, nil)
-	suite.repoMock.On("GetAll").Return(dummyList, nil)
+	suite.customerRepoMock.On("UpdateList", newList).Return([]model.Customer{}, nil)
+	suite.customerRepoMock.On("GetAll").Return(dummyCustomerList, nil)
 
-	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.repoMock)
+	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.customerRepoMock)
 	actual, err := CustomerUsecaseTest.Insert(&newCustomer)
 
 	assert.Nil(suite.T(), err)
@@ -187,10 +186,10 @@ func (suite *CustomerUsecaseTestSuite) TestInsert_Success() {
 
 func (suite *CustomerUsecaseTestSuite) TestInsert_Failed() {
 
-	suite.repoMock.On("UpdateList", nil).Return(nil, errors.New("failed"))
-	suite.repoMock.On("GetAll").Return(dummyList, nil)
+	suite.customerRepoMock.On("UpdateList", nil).Return(nil, errors.New("failed"))
+	suite.customerRepoMock.On("GetAll").Return(dummyCustomerList, nil)
 
-	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.repoMock)
+	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.customerRepoMock)
 	actual, err := CustomerUsecaseTest.Insert(&model.Customer{})
 
 	assert.NotNil(suite.T(), err)
@@ -199,28 +198,28 @@ func (suite *CustomerUsecaseTestSuite) TestInsert_Failed() {
 
 func (suite *CustomerUsecaseTestSuite) TestUpdateBothBalance_Success() {
 	amount := 2000
-	sender := dummyList[0]
-	receiver := dummyList[1]
+	sender := dummyCustomerList[0]
+	receiver := dummyCustomerList[1]
 
-	suite.repoMock.On("UpdateList", afterPayment).Return([]model.Customer{}, nil)
-	suite.repoMock.On("GetAll").Return(dummyList, nil)
+	suite.customerRepoMock.On("UpdateList", afterPayment).Return([]model.Customer{}, nil)
+	suite.customerRepoMock.On("GetAll").Return(dummyCustomerList, nil)
 
-	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.repoMock)
+	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.customerRepoMock)
 	err := CustomerUsecaseTest.UpdateBothBalance(amount, sender.Id, receiver.Id)
 
 	assert.Nil(suite.T(), err)
-	assert.True(suite.T(), afterPayment[1].Balance == dummyList[1].Balance)
+	assert.True(suite.T(), afterPayment[1].Balance == dummyCustomerList[1].Balance)
 }
 
 func (suite *CustomerUsecaseTestSuite) TestUpdateBothBalance_FailedExceededAmount() {
 	amount := 999999
-	sender := dummyList[0]
-	receiver := dummyList[1]
+	sender := dummyCustomerList[0]
+	receiver := dummyCustomerList[1]
 
-	suite.repoMock.On("UpdateList", afterPayment).Return([]model.Customer{}, nil)
-	suite.repoMock.On("GetAll").Return(dummyList, nil)
+	suite.customerRepoMock.On("UpdateList", afterPayment).Return([]model.Customer{}, nil)
+	suite.customerRepoMock.On("GetAll").Return(dummyCustomerList, nil)
 
-	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.repoMock)
+	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.customerRepoMock)
 	err := CustomerUsecaseTest.UpdateBothBalance(amount, sender.Id, receiver.Id)
 
 	assert.NotNil(suite.T(), err)
@@ -228,20 +227,20 @@ func (suite *CustomerUsecaseTestSuite) TestUpdateBothBalance_FailedExceededAmoun
 
 func (suite *CustomerUsecaseTestSuite) TestUpdateBothBalance_FailedNegativeAmount() {
 	amount := -7
-	sender := dummyList[0]
-	receiver := dummyList[1]
+	sender := dummyCustomerList[0]
+	receiver := dummyCustomerList[1]
 
-	suite.repoMock.On("UpdateList", afterPayment).Return([]model.Customer{}, nil)
-	suite.repoMock.On("GetAll").Return(dummyList, nil)
+	suite.customerRepoMock.On("UpdateList", afterPayment).Return([]model.Customer{}, nil)
+	suite.customerRepoMock.On("GetAll").Return(dummyCustomerList, nil)
 
-	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.repoMock)
+	CustomerUsecaseTest := usecase.NewCustomerUsecase(suite.customerRepoMock)
 	err := CustomerUsecaseTest.UpdateBothBalance(amount, sender.Id, receiver.Id)
 
 	assert.NotNil(suite.T(), err)
 }
 
 func (suite *CustomerUsecaseTestSuite) SetupTest() {
-	suite.repoMock = new(repoMock)
+	suite.customerRepoMock = new(customerRepoMock)
 }
 
 func TestCustomerUsecaseTestSuite(t *testing.T) {

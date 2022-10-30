@@ -48,11 +48,10 @@ func (c *CustomerController) CreateNewCustomer(ctx *gin.Context) {
 
 	var customer model.Customer
 
-	err := ctx.ShouldBind(&customer)
+	err := ctx.ShouldBindJSON(&customer)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
-			"data":  customer,
 		})
 		return
 	}
@@ -79,7 +78,7 @@ func (c *CustomerController) CreateNewCustomer(ctx *gin.Context) {
 		log.Println("unable to log registration:", err)
 	}
 
-	response.JsonDataMessageResponse(ctx, customer, "customer created")
+	response.JsonDataResponse(ctx, customer)
 }
 
 func NewCustomerController(usecase usecase.CustomerUsecase, router *gin.Engine) *CustomerController {
@@ -91,8 +90,5 @@ func NewCustomerController(usecase usecase.CustomerUsecase, router *gin.Engine) 
 	router.GET("/customer", controller.ListCustomer)
 	router.GET("/customer/:id", controller.GetById)
 	router.POST("/customer", controller.CreateNewCustomer)
-
-	// router.POST("/top_up", middleware.IsLogin())
-
 	return &controller
 }

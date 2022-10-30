@@ -32,6 +32,7 @@ func (repo *transactionRepository) GetAll() ([]model.Transaction, error) {
 }
 
 func (repo *transactionRepository) Insert(newTransaction *model.Transaction) (model.Transaction, error) {
+
 	if newTransaction.SenderId == "" {
 		return model.Transaction{}, errors.New("no sender")
 	}
