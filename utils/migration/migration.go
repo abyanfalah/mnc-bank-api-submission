@@ -27,11 +27,12 @@ func Migrate() {
 				panic(err)
 			}
 
-			if table == "customer" {
-				AddDummyCustomer()
-			}
-
 			file.Close()
+		}
+
+		if table == "customer" {
+			os.Truncate(filePath("customer"), 0)
+			AddDummyCustomer()
 		}
 	}
 }
@@ -73,7 +74,7 @@ func AddDummyTransaction() {
 		Id:         "test",
 		SenderId:   "test",
 		ReceiverId: "test",
-		Amount:     12345,
+		Amount:     5000,
 		Created_at: time.Now(),
 	}
 
