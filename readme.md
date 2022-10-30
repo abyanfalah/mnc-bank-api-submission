@@ -10,7 +10,15 @@ Cookie is used for authorization.
 
 At the very least, this app is usable for a real-life simple payment case.
 
-
+## Features
+- Login & logout customer
+- List customer
+- Get customer by Id
+- New customer registration
+- List transactions
+- Get transaction by Id
+- New payment
+- List activity log
 
 ## Installation
 You can directly download the build [here](https://github.com/abyanfalah/mnc-bank-api-submission/releases/tag/bin)
