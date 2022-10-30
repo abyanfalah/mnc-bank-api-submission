@@ -86,19 +86,19 @@ func (cu *CustomerUsecaseMock) UpdateBothBalance(payAmount int, senderId, receiv
 
 type CustomerControllerTestSuite struct {
 	suite.Suite
-	customerUsecaseMock *CustomerUsecaseMock
+	CustomerUsecaseMock *CustomerUsecaseMock
 	routerMock          *gin.Engine
 }
 
 func (suite *CustomerControllerTestSuite) SetupTest() {
 	suite.routerMock = gin.Default()
-	suite.customerUsecaseMock = new(CustomerUsecaseMock)
+	suite.CustomerUsecaseMock = new(CustomerUsecaseMock)
 }
 
 func (suite *CustomerControllerTestSuite) TestListCustomerApi_Success() {
-	suite.customerUsecaseMock.On("GetAll").Return(dummyCustomerList, nil)
+	suite.CustomerUsecaseMock.On("GetAll").Return(dummyCustomerList, nil)
 
-	controller.NewCustomerController(suite.customerUsecaseMock, suite.routerMock)
+	controller.NewCustomerController(suite.CustomerUsecaseMock, suite.routerMock)
 
 	r := httptest.NewRecorder()
 	request, err := http.NewRequest(http.MethodGet, "/customer", nil)
@@ -115,9 +115,9 @@ func (suite *CustomerControllerTestSuite) TestListCustomerApi_Success() {
 }
 
 func (suite *CustomerControllerTestSuite) TestListCustomerApi_Failed() {
-	suite.customerUsecaseMock.On("GetAll").Return(nil, errors.New("failed"))
+	suite.CustomerUsecaseMock.On("GetAll").Return(nil, errors.New("failed"))
 
-	controller.NewCustomerController(suite.customerUsecaseMock, suite.routerMock)
+	controller.NewCustomerController(suite.CustomerUsecaseMock, suite.routerMock)
 
 	r := httptest.NewRecorder()
 	request, err := http.NewRequest(http.MethodGet, "/customer", nil)
@@ -135,9 +135,9 @@ func (suite *CustomerControllerTestSuite) TestListCustomerApi_Failed() {
 
 func (suite *CustomerControllerTestSuite) TestGetByIdCustomerApi_Success() {
 	customer := dummyCustomerList[0]
-	suite.customerUsecaseMock.On("GetById", customer.Id).Return(customer, nil)
+	suite.CustomerUsecaseMock.On("GetById", customer.Id).Return(customer, nil)
 
-	controller.NewCustomerController(suite.customerUsecaseMock, suite.routerMock)
+	controller.NewCustomerController(suite.CustomerUsecaseMock, suite.routerMock)
 
 	r := httptest.NewRecorder()
 	request, err := http.NewRequest(http.MethodGet, "/customer/"+customer.Id, nil)
@@ -155,9 +155,9 @@ func (suite *CustomerControllerTestSuite) TestGetByIdCustomerApi_Success() {
 
 func (suite *CustomerControllerTestSuite) TestGetByIdCustomerApi_Failed() {
 	customer := dummyCustomerList[0]
-	suite.customerUsecaseMock.On("GetById", customer.Id).Return(model.Customer{}, errors.New("failed"))
+	suite.CustomerUsecaseMock.On("GetById", customer.Id).Return(model.Customer{}, errors.New("failed"))
 
-	controller.NewCustomerController(suite.customerUsecaseMock, suite.routerMock)
+	controller.NewCustomerController(suite.CustomerUsecaseMock, suite.routerMock)
 
 	r := httptest.NewRecorder()
 	request, err := http.NewRequest(http.MethodGet, "/customer/"+customer.Id, nil)
@@ -175,9 +175,9 @@ func (suite *CustomerControllerTestSuite) TestGetByIdCustomerApi_Failed() {
 
 func (suite *CustomerControllerTestSuite) TestGetByCredentialsCustomerApi_Success() {
 	customer := dummyCustomerList[0]
-	suite.customerUsecaseMock.On("GetByCredentials", customer.Username, customer.Password).Return(customer, nil)
+	suite.CustomerUsecaseMock.On("GetByCredentials", customer.Username, customer.Password).Return(customer, nil)
 
-	controller.NewLoginController(suite.customerUsecaseMock, suite.routerMock)
+	controller.NewLoginController(suite.CustomerUsecaseMock, suite.routerMock)
 
 	r := httptest.NewRecorder()
 
@@ -196,9 +196,9 @@ func (suite *CustomerControllerTestSuite) TestGetByCredentialsCustomerApi_Succes
 
 func (suite *CustomerControllerTestSuite) TestGetByCredentialsCustomerApi_Failed() {
 	customer := dummyCustomerList[0]
-	suite.customerUsecaseMock.On("GetByCredentials", customer.Username, customer.Password).Return(model.Customer{}, errors.New("failed"))
+	suite.CustomerUsecaseMock.On("GetByCredentials", customer.Username, customer.Password).Return(model.Customer{}, errors.New("failed"))
 
-	controller.NewLoginController(suite.customerUsecaseMock, suite.routerMock)
+	controller.NewLoginController(suite.CustomerUsecaseMock, suite.routerMock)
 
 	r := httptest.NewRecorder()
 
@@ -229,10 +229,10 @@ func (suite *CustomerControllerTestSuite) TestCreateNewCustomerApi_Success() {
 		Balance:  123,
 	}
 
-	suite.customerUsecaseMock.On("GetByUsername", customer.Username).Return(model.Customer{})
-	suite.customerUsecaseMock.On("Insert", &customer).Return(customer, nil)
+	suite.CustomerUsecaseMock.On("GetByUsername", customer.Username).Return(model.Customer{})
+	suite.CustomerUsecaseMock.On("Insert", &customer).Return(customer, nil)
 
-	controller.NewCustomerController(suite.customerUsecaseMock, suite.routerMock)
+	controller.NewCustomerController(suite.CustomerUsecaseMock, suite.routerMock)
 
 	r := httptest.NewRecorder()
 
@@ -259,10 +259,10 @@ func (suite *CustomerControllerTestSuite) TestCreateNewCustomerApi_FailedTakenUs
 		Balance:  123,
 	}
 
-	suite.customerUsecaseMock.On("GetByUsername", customer.Username).Return(customer)
-	suite.customerUsecaseMock.On("Insert", &customer).Return(model.Customer{}, nil)
+	suite.CustomerUsecaseMock.On("GetByUsername", customer.Username).Return(customer)
+	suite.CustomerUsecaseMock.On("Insert", &customer).Return(model.Customer{}, nil)
 
-	controller.NewCustomerController(suite.customerUsecaseMock, suite.routerMock)
+	controller.NewCustomerController(suite.CustomerUsecaseMock, suite.routerMock)
 
 	r := httptest.NewRecorder()
 
@@ -282,10 +282,10 @@ func (suite *CustomerControllerTestSuite) TestCreateNewCustomerApi_FailedTakenUs
 func (suite *CustomerControllerTestSuite) TestCreateNewCustomerApi_FailedEmptyStruct() {
 	customer := model.Customer{}
 
-	suite.customerUsecaseMock.On("GetByUsername", customer.Username).Return(model.Customer{})
-	suite.customerUsecaseMock.On("Insert", &customer).Return(model.Customer{}, nil)
+	suite.CustomerUsecaseMock.On("GetByUsername", customer.Username).Return(model.Customer{})
+	suite.CustomerUsecaseMock.On("Insert", &customer).Return(model.Customer{}, nil)
 
-	controller.NewCustomerController(suite.customerUsecaseMock, suite.routerMock)
+	controller.NewCustomerController(suite.CustomerUsecaseMock, suite.routerMock)
 
 	r := httptest.NewRecorder()
 

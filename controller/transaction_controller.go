@@ -16,6 +16,7 @@ type TransactionController struct {
 }
 
 func (tc *TransactionController) ListTransaction(ctx *gin.Context) {
+
 	list, err := tc.transactionUsecase.GetAll()
 	if err != nil {
 		response.JsonErrorInternalServerError(ctx, err, "cannot get transaction list")
@@ -51,7 +52,7 @@ func (tc *TransactionController) CreateNewTransaction(ctx *gin.Context) {
 	}
 
 	if transaction.ReceiverId == customerId || transaction.ReceiverId == "" {
-		response.JsonBadRequestMessage(ctx, "invalid receiver. nice joke")
+		response.JsonBadRequestMessage(ctx, "invalid receiver")
 		return
 	}
 
@@ -86,7 +87,7 @@ func (tc *TransactionController) CreateNewTransaction(ctx *gin.Context) {
 		return
 	}
 
-	response.JsonDataMessageResponse(ctx, newTransaction, "transaction created")
+	response.JsonDataResponse(ctx, newTransaction)
 }
 
 func NewTransactionController(usecase usecase.TransactionUsecase, CustomerUsecase usecase.CustomerUsecase, router *gin.Engine) *TransactionController {

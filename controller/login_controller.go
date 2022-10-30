@@ -2,6 +2,7 @@ package controller
 
 import (
 	"log"
+	"mnc-bank-api/middleware"
 	"mnc-bank-api/model"
 	"mnc-bank-api/usecase"
 	"mnc-bank-api/utils"
@@ -56,7 +57,7 @@ func (lc *LoginController) Login(ctx *gin.Context) {
 func (lc *LoginController) Logout(ctx *gin.Context) {
 	customerId, err := ctx.Cookie("session")
 	if err != nil {
-		response.JsonErrorInternalServerError(ctx, err, "error getting session")
+		response.JsonErrorInternalServerError(ctx, err, "error getting session (logout)")
 		return
 	}
 
@@ -87,7 +88,20 @@ func NewLoginController(usecase usecase.CustomerUsecase, router *gin.Engine) *Lo
 
 	router.POST("/login", controller.Login)
 	router.POST("/logout", controller.Logout)
-	// router.POST("/test/login", controller.LoginTest)
+
+	router.GET("/test_session", middleware.IsLogin(), func(ctx *gin.Context) {
+		cookie, err := ctx.Cookie("session")
+		if err != nil {
+			ctx.JSON(http.StatusUnauthorized, gin.H{
+				"session": "empty",
+			})
+			return
+		}
+
+		ctx.JSON(http.StatusOK, gin.H{
+			"session": cookie,
+		})
+	})
 
 	return &controller
 }
