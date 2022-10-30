@@ -36,7 +36,7 @@ This app also requires no RDBMS. It uses json files as database.
 
 And the migration will create the required directory and files for the database once you run the app.
 
-You can just execute or run the app and will tell you which port this app is listening at.
+You can just execute or run the app and it will tell you which port this app is listening to.
 
 The starting point is `localhost:8000`
 and will iterate by itself if current port is used until unused one found.
