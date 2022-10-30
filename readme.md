@@ -6,7 +6,11 @@ This project uses Gin as web framework.
 
 No RDBMS involved in this project, it uses json files to store data.
 
+Cookie is used for authorization.
+
 At the very least, this app is usable for a real-life simple payment case.
+
+
 
 ## Installation
 You can directly download the build [here](https://github.com/abyanfalah/mnc-bank-api-submission/releases/tag/bin)
@@ -48,6 +52,7 @@ Make sure to match the `base_url` in environment variables of your API client to
 
 ## Usage
 You can get a brief guide and simple usage explanation by importing [this file](https://github.com/abyanfalah/mnc-bank-api-submission/blob/main/Request%20collection.postman_collection.json) to Postman API client.
+
 
 ## Testing
 To run the test of this app, go to test directory and execute the following command:
