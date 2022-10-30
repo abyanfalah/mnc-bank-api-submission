@@ -33,6 +33,7 @@ and run the app by executing it:
 This app requires zero config.
 
 This app also requires no RDBMS. It uses json files as database.
+
 And the migration will create the required directory and files for the database once you run the app.
 
 You can just execute or run the app and will tell you which port this app is listening at.
