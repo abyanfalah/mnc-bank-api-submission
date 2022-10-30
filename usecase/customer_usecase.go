@@ -58,9 +58,9 @@ func (usecase *customerUsecase) GetByCredentials(username, password string) (mod
 		return model.Customer{}, err
 	}
 
-	for index, each := range list {
+	for _, each := range list {
 		if each.Username == username && each.Password == utils.Sha1(password) {
-			return list[index], nil
+			return each, nil
 		}
 	}
 
@@ -68,7 +68,13 @@ func (usecase *customerUsecase) GetByCredentials(username, password string) (mod
 }
 
 func (usecase *customerUsecase) Insert(newCustomer *model.Customer) (model.Customer, error) {
-	newCustomer.Id = utils.GenerateId()
+	if newCustomer.Name == "" || newCustomer.Username == "" || newCustomer.Password == "" {
+		return model.Customer{}, errors.New("emtpy struct")
+	}
+
+	if newCustomer.Id == "" {
+		newCustomer.Id = utils.GenerateId()
+	}
 	newCustomer.Password = utils.Sha1(newCustomer.Password)
 
 	list, _ := usecase.GetAll()
@@ -85,8 +91,16 @@ func (usecase *customerUsecase) Insert(newCustomer *model.Customer) (model.Custo
 func (usecase *customerUsecase) UpdateBothBalance(payAmount int, senderId, receiverId string) error {
 	list, _ := usecase.GetAll()
 
+	if payAmount < 0 {
+		return errors.New("invalid amount")
+	}
+
 	for index, each := range list {
 		if each.Id == senderId {
+			if payAmount > each.Balance {
+				return errors.New("invalid amount")
+			}
+
 			list[index].Balance -= payAmount
 		}
 

@@ -44,7 +44,6 @@ func (suite *CustomerRepositoryTestSuite) TestUpdateList_Success() {
 		Password: "test",
 		Balance:  123,
 	}
-
 	newList := append(oldList, newCust)
 	updateErr := repo.UpdateList(newList)
 
@@ -53,7 +52,6 @@ func (suite *CustomerRepositoryTestSuite) TestUpdateList_Success() {
 	assert.True(suite.T(), len(newList) > len(oldList))
 
 	os.Truncate(suite.tablePath, 0)
-
 }
 
 func (suite *CustomerRepositoryTestSuite) TestUpdateList_FailedNoNewList() {
