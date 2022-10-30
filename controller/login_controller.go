@@ -38,7 +38,7 @@ func (lc *LoginController) Login(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetCookie("session", customer.Id, 3600, "/", "localhost", true, true)
+	ctx.SetCookie("session", customer.Id, 3600, "/", "localhost", false, true)
 
 	err = jsonrw.JsonWriteData("activity_log", model.Activity{
 		Id:         utils.GenerateId(),
@@ -75,7 +75,7 @@ func (lc *LoginController) Logout(ctx *gin.Context) {
 		log.Println("unable to log logout:", err)
 	}
 
-	ctx.SetCookie("session", "", -1, "/", "localhost", true, true)
+	ctx.SetCookie("session", "", -1, "/", "localhost", false, true)
 	response.JsonSuccessMessage(ctx, "logout success")
 }
 

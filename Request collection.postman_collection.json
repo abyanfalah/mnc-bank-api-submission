@@ -1,0 +1,202 @@
+{
+	"info": {
+		"_postman_id": "5524da0b-95e0-4549-8ffe-2e7776d111d8",
+		"name": "Request collection",
+		"description": "Authentication request collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20199384"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\t\"username\": \"andi\",\n\t\t\"password\": \"password\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"login"
+					]
+				},
+				"description": "Login will works only if you use valid credentials of registered user.\n\nSend a GET request to `base_url/customer` to see list of usernames.\n\nuse `password` as the password for every customer to login."
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/logout",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"logout"
+					]
+				},
+				"description": "Logout will work if you are already logged in.\n\nAfter logging out, you will be restricted to access all transaction endpoints."
+			},
+			"response": []
+		},
+		{
+			"name": "Customer List",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/customer",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"customer"
+					]
+				},
+				"description": "Here you can get the list of registered customers."
+			},
+			"response": []
+		},
+		{
+			"name": "Customer By ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/customer/b6742d40-aba2-4906-8883-838c1bce893e",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"customer",
+						"b6742d40-aba2-4906-8883-838c1bce893e"
+					]
+				},
+				"description": "Here you can get specific customer data based on the id you put at the end of the url as parameter."
+			},
+			"response": []
+		},
+		{
+			"name": "Register new customer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\" : \"user\",\n\t\"username\" : \"user\",\n\t\"password\" : \"password\",\n\t\"balance\" : 2000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/customer",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"customer"
+					]
+				},
+				"description": "Registration will only work if you are not logged in, and the username is not taken yet."
+			},
+			"response": []
+		},
+		{
+			"name": "Transaction List",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/transaction",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"transaction"
+					]
+				},
+				"description": "Here you can get the list of transactions done by customers.\n\nYou should login first to access this endpoint."
+			},
+			"response": []
+		},
+		{
+			"name": "Transaction By ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/transaction/4e0e600e-2687-4954-8d0e-31b9a271be21",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"transaction",
+						"4e0e600e-2687-4954-8d0e-31b9a271be21"
+					]
+				},
+				"description": "Here you can get specific payment data based on the id you put at the end of the url as parameter."
+			},
+			"response": []
+		},
+		{
+			"name": "New payment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"receiver_id\": \"b6742d40-aba2-4906-8883-838c1bce893e\",\n\t\"amount\" : 10000\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/transaction",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"transaction"
+					]
+				},
+				"description": "Payment will not work if:\n\n- you are not logged in.\n- payment amount is invalid (negative value, exceed sender balance, empty, etc.).\n- you make payment to yourself, or nobody.\n    \n\nOtherwise, it works."
+			},
+			"response": []
+		},
+		{
+			"name": "Activity log",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/activity_log",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"activity_log"
+					]
+				},
+				"description": "Here you can see the history of login, logout, or registration activity of customers.\n\nTo see payment history, you can just see the transaction list."
+			},
+			"response": []
+		}
+	]
+}
